@@ -1,1 +1,1 @@
-# csci3960-sofe3980
+# csci3060-sofe3980
