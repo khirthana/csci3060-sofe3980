@@ -9,6 +9,6 @@ do
     then
         echo "$f and $filename are the same"
     else
-        difference > dir/log.txt
+        difference >> dir/results.log
     fi
 done
