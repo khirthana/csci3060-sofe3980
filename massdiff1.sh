@@ -1,13 +1,10 @@
 filename=$1
-dir=$(dirname $0)
-filename=dir/filename
-for f in *; do
-    cf=dir/f
-    difference=$(diff cf filename)
-    if [ $difference == 0 ]
+for f in $(ls);do
+    difference=$(diff f filename)
+    if [ $difference==0 ]
     then
         echo "$f and $filename are the same"
     else
-        difference >> dir/log.txt
+        difference >> log.txt
     fi
 done
