@@ -49,7 +49,7 @@ public:
 		
 		double account_number = std::stod(this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}"));
 		if (account_number != this->current_account->getAccountNumber()){
-			
+			return;
 		}
 			
 		double withdrawal_amount= std::stod(this->utility_functions.prompt("Please Enter the Withdrawl Ammount: ","\\d{0,5}")); //needs changing reg to upper amount limit
@@ -65,7 +65,7 @@ public:
 
 
 		//if successful withdrawal; add withdrawal transaction information in transactions_log list
-		this->transactions_log.Add("01 "+this->current_account.account_name+" "+this->current_account.account_number+" "+withdrawal_amount+" "+this->current_account.account_type);
+		this->transactions_log.append("01 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+std::to_string(withdrawal_amount)+" "+this->current_account->getAccountType());
 	}
 
 	void transfer(){
@@ -81,8 +81,8 @@ public:
 
 
 		//if successful transfer; add transfer transaction information in transactions_log list
-		transactions_log.Add("01 "+this->current_account.account_name+" "+this->current_account.account_number+" "+transfer_amount+" "+this->current_account.account_type);
-		transactions_log.Add("04 "+this->current_account.account_name+" "+this->current_account.account_number+" "+transfer_amount+" "+this->current_account.account_type);
+		this->transactions_log.append("01 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+std::to_string(transfer_amount)+" "+this->current_account->getAccountType());
+		this->transactions_log.append("04 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+std::to_string(transfer_amount)+" "+this->current_account->getAccountType());
 
 	}
 
@@ -99,7 +99,7 @@ public:
 
 
 		//if successful paybill; add paybill transaction information in transactions_log list
-		transactions_log.Add("03 "+this->current_account.account_name+" "+this->current_account.account_number+" "+amount_to_pay+" "+this->current_account.account_type);
+		this->transactions_log.append("03 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+amount_to_pay+" "+this->current_account->getAccountType());
 
 	}
 
@@ -115,7 +115,7 @@ public:
 
 
 		//if successful deposit; add deposit transaction information in transactions_log list
-		transactions_log.Add("04 "+this->current_account.account_name+" "+this->current_account.account_number+" "+amount_deposit+" "+this->current_account.account_type);
+		this->transactions_log.append("04 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+amount_deposit+" "+this->current_account->getAccountType());
 	}
 
 	void createAccount(){
@@ -129,7 +129,7 @@ public:
 
 
 			//if account created; add account information in transactions_log list
-			transactions_log.Add("05 "+this->current_account.account_name+" "+this->current_account.account_number+" "+account_balance+" "+this->current_account.account_type);
+			this->transactions_log.append("05 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+account_balance+" "+this->current_account->getAccountType());
 
 		}
 	}
@@ -143,7 +143,7 @@ public:
 
 
 		//if account deleted; add deleted account information in transactions_log list
-		transactions_log.Add("06 "+this->current_account.account_name+" "+this->current_account.account_number+" "+"      "+this->current_account.account_type);
+		this->transactions_log.append("06 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+"      "+this->current_account->getAccountType());
 		}
 	}
 
@@ -156,7 +156,7 @@ public:
 
 
 			//if account enabled; add enabed account information in transactions_log list
-			transactions_log.Add("09 "+this->current_account.account_name+" "+this->current_account.account_number+" "+this->current_account.account_balance+" "+this->current_account.account_status);
+			this->transactions_log.append("09 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+this->current_account.account_balance+" "+this->current_account.account_status);
 		}
 	}
 
@@ -169,7 +169,7 @@ public:
 
 
 			//if account disabled; add disabled account information in transactions_log list
-			transactions_log.Add("07 "+this->current_account.account_name+" "+this->current_account.account_number+" "+this->current_account.account_balance+" "+this->current_account.account_status);
+			this->transactions_log.append("07 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+this->current_account.account_balance+" "+this->current_account.account_status);
 		}
 	}
 
@@ -182,7 +182,7 @@ public:
 
 
 			//if account plan is changed; add account plan information in transactions_log list
-			transactions_log.Add("08 "+this->current_account.account_name+" "+this->current_account.account_number+" "+this->current_account.account_balance+" "+this->current_account.account_type);
+			this->transactions_log.append("08 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+this->current_account.account_balance+" "+this->current_account->getAccountType());
 
 		}
 	}
@@ -191,7 +191,7 @@ public:
 		//end session
 
 		//if logout; add logout information in transactions_log list
-		transactions_log.Add("00 "+this->current_account.account_name+" "+this->current_account.account_number+" "+"      "+this->current_account.account_type);
+		this->transactions_log.append("00 "+this->current_account->getAccountName()+" "+std::to_string(this->current_account->getAccountNumber())+" "+"      "+this->current_account->getAccountType());
 
 		//output transaction file log
 		for(std::list<std::string>::const_iterator i = transactions_log.begin(); i != transactions_log.end(); ++i){
