@@ -12,12 +12,15 @@
 
 class AccountManager{
 public:
-	std::list<std::string>* transactions_log = new std::list<std::string>();
+	std::string transactions_log;
 	std::list<Account> accounts_in_file;
 	std::string session_type;
 	Utilities utility_functions;
 	Account* current_account;
-
+	
+	AccountManager(){
+		this->transactions_log = "";
+	}
 	void login(){
 		//an example usage of the this->utility_functions
 		this->session_type = this->utility_functions.prompt("Please Enter the Kind of Session: ","",{"standard","admin"});
@@ -26,7 +29,7 @@ public:
 		
 		if(this->session_type=="standard"){
 			std::string account_name = this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
-			Account* current_account = utility_functions.getAccountFromName(account_name,accounts_in_file);
+			this->current_account = utility_functions.getAccountFromName(account_name,accounts_in_file);
 			
 			if (this->current_account == nullptr){
 				this->utility_functions.prompt("Invalid Account Name.");
@@ -42,15 +45,23 @@ public:
 				this->utility_functions.prompt("Invalid Account Name.");
 			}
 		}
+		
+		
+		double account_number = std::stod(this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}"));
+		double withdrawal_amount= std::stod(this->utility_functions.prompt("Please Enter the Withdrawl Ammount: ","\\d{0,5}")); //needs changing reg to upper amount limit
 
-		account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
-		double withdrawal_amount=
-
-		//withdraw amount from account
+		double current_balance = this->current_account->getBalance();
+		if ( current_balance > withdrawal_amount){
+			current_account->setBalance(current_balance-withdrawal_amount);
+			this->utility_functions.prompt("Transaction successful.");
+		}
+		else{
+			this->utility_functions.prompt("Insufficient funds.");
+		}
 
 
 		//if successful withdrawal; add withdrawal transaction information in transactions_log list
-		transactions_log.Add("01 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+withdrawal_amount+" "+this->currentAccount.account_type);
+		this->transactions_log.Add("01 "+this->current_account.account_name+" "+this->current_account.account_number+" "+withdrawal_amount+" "+this->current_account.account_type);
 	}
 
 	void transfer(){
@@ -58,7 +69,7 @@ public:
 			account_name =  this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
 		}
 
-		account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");//not sure how to limit to 5 digits
+		double account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");//not sure how to limit to 5 digits
 		std::string account_number_to =
 		double transfer_amount=
 
@@ -66,8 +77,8 @@ public:
 
 
 		//if successful transfer; add transfer transaction information in transactions_log list
-		transactions_log.Add("01 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+transfer_amount+" "+this->currentAccount.account_type);
-		transactions_log.Add("04 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+transfer_amount+" "+this->currentAccount.account_type);
+		transactions_log.Add("01 "+this->current_account.account_name+" "+this->current_account.account_number+" "+transfer_amount+" "+this->current_account.account_type);
+		transactions_log.Add("04 "+this->current_account.account_name+" "+this->current_account.account_number+" "+transfer_amount+" "+this->current_account.account_type);
 
 	}
 
@@ -76,7 +87,7 @@ public:
 			account_name =  this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
 		}
 
-		account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
+		double account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
 		std::string company_paidto=
 		double amount_to_pay=
 
@@ -84,7 +95,7 @@ public:
 
 
 		//if successful paybill; add paybill transaction information in transactions_log list
-		transactions_log.Add("03 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+amount_to_pay+" "+this->currentAccount.account_type);
+		transactions_log.Add("03 "+this->current_account.account_name+" "+this->current_account.account_number+" "+amount_to_pay+" "+this->current_account.account_type);
 
 	}
 
@@ -93,14 +104,14 @@ public:
 			account_name =  this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
 		}
 
-		account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
+		double account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
 		double amount_deposit=
 
 		//deposit amount
 
 
 		//if successful deposit; add deposit transaction information in transactions_log list
-		transactions_log.Add("04 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+amount_deposit+" "+this->currentAccount.account_type);
+		transactions_log.Add("04 "+this->current_account.account_name+" "+this->current_account.account_number+" "+amount_deposit+" "+this->current_account.account_type);
 	}
 
 	void createAccount(){
@@ -114,7 +125,7 @@ public:
 
 
 			//if account created; add account information in transactions_log list
-			transactions_log.Add("05 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+account_balance+" "+this->currentAccount.account_type);
+			transactions_log.Add("05 "+this->current_account.account_name+" "+this->current_account.account_number+" "+account_balance+" "+this->current_account.account_type);
 
 		}
 	}
@@ -122,52 +133,52 @@ public:
 	void deleteAccount(){
 		if(session_type=="admin"){
 			account_name =  this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
-			account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
+			double account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
 
 		//delete account from system
 
 
 		//if account deleted; add deleted account information in transactions_log list
-		transactions_log.Add("06 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+"      "+this->currentAccount.account_type);
+		transactions_log.Add("06 "+this->current_account.account_name+" "+this->current_account.account_number+" "+"      "+this->current_account.account_type);
 		}
 	}
 
 	void enableAccount(){
 		if(session_type=="admin"){
 			account_name =  this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
-			account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
+			double account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
 
 			//enabe account; account status from D to A
 
 
 			//if account enabled; add enabed account information in transactions_log list
-			transactions_log.Add("09 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+this->currentAccount.account_balance+" "+this->currentAccount.account_status);
+			transactions_log.Add("09 "+this->current_account.account_name+" "+this->current_account.account_number+" "+this->current_account.account_balance+" "+this->current_account.account_status);
 		}
 	}
 
 	void disableAccount(){
 		if(session_type=="admin"){
 			account_name =  this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
-			account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
+			double account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
 
 			//disable account; account status from A to D
 
 
 			//if account disabled; add disabled account information in transactions_log list
-			transactions_log.Add("07 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+this->currentAccount.account_balance+" "+this->currentAccount.account_status);
+			transactions_log.Add("07 "+this->current_account.account_name+" "+this->current_account.account_number+" "+this->current_account.account_balance+" "+this->current_account.account_status);
 		}
 	}
 
 	void changePlan(){
 		if(session_type=="admin"){
 			account_name =  this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
-			account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
+			double account_number = this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}");
 
 			//changeplan for account; account type should be change (S/NS)
 
 
 			//if account plan is changed; add account plan information in transactions_log list
-			transactions_log.Add("08 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+this->currentAccount.account_balance+" "+this->currentAccount.account_type);
+			transactions_log.Add("08 "+this->current_account.account_name+" "+this->current_account.account_number+" "+this->current_account.account_balance+" "+this->current_account.account_type);
 
 		}
 	}
@@ -176,7 +187,7 @@ public:
 		//end session
 
 		//if logout; add logout information in transactions_log list
-		transactions_log.Add("00 "+this->currentAccount.account_name+" "+this->currentAccount.account_number+" "+"      "+this->currentAccount.account_type);
+		transactions_log.Add("00 "+this->current_account.account_name+" "+this->current_account.account_number+" "+"      "+this->current_account.account_type);
 
 		//output transaction file log
 		for(std::list<std::string>::const_iterator i = transactions_log.begin(); i != transactions_log.end(); ++i){

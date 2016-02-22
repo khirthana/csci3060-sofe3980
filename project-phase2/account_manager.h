@@ -14,6 +14,7 @@ public:
 	std::string session_type;
 	Account logged_in_account;
 
+	AccountManager();
 	void login();
 	void withdrawal();
 	void transfer();

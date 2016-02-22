@@ -13,6 +13,7 @@ public:
 	std::string prompt(std::string output, std::string reg = "", std::list<std::string> acceptions = {});
 	std::list<Account> loadAccountInformation(std::string accounts_file);
 	Account *getAccountFromName(std::string name, std::list<Account> accounts);
+	Account *getAccountFromNumber(double number, std::list<Account> accounts);
 };
 
 #endif

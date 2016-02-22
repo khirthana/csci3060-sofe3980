@@ -75,7 +75,20 @@ public:
 		for(int i=0; i<accounts.size(); i++){
 			if (it->getAccountName() == name){
 				return &*it;
-				break;
+			}
+			++it;
+		}
+		if (!found){
+			return nullptr;
+		}
+	}
+	
+	Account *getAccountFromNumber(double number, std::list<Account> accounts){
+		bool found = false;
+		std::list<Account>::iterator it = accounts.begin();
+		for(int i=0; i<accounts.size(); i++){
+			if (it->getAccountNumber() == number){
+				return &*it;
 			}
 			++it;
 		}
