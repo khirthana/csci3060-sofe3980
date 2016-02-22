@@ -40,7 +40,7 @@ public:
 	void withdrawal(){
 		if(session_type=="admin"){
 			std::string account_name =  this->utility_functions.prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
-			current_account = this->utility_functions.getAccountFromName(account_name,this->accounts_in_file);
+			this->current_account = this->utility_functions.getAccountFromName(account_name,this->accounts_in_file);
 			if (this->current_account == nullptr){
 				this->utility_functions.prompt("Invalid Account Name.");
 			}
@@ -48,6 +48,10 @@ public:
 		
 		
 		double account_number = std::stod(this->utility_functions.prompt("Please Enter the Account Number: ","\\d{0,5}"));
+		if (account_number != this->current_account->getAccountNumber()){
+			
+		}
+			
 		double withdrawal_amount= std::stod(this->utility_functions.prompt("Please Enter the Withdrawl Ammount: ","\\d{0,5}")); //needs changing reg to upper amount limit
 
 		double current_balance = this->current_account->getBalance();

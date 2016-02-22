@@ -7,13 +7,13 @@
 #include <fstream>
 
 class Account{
-public:
+private:
 	std::string account_name;
 	double account_number;
 	double account_balance;
 	std::string account_type;
 	std::string account_status;
-	
+public:
 	Account(std::string number, std::string name, std::string status, std::string  balance , std::string type){
 		this->account_name = name;
 		this->account_number = std::stod(number);
