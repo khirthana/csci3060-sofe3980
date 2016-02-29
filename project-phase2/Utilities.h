@@ -4,21 +4,24 @@ authors: Khirthana Subramanian - 100453865
 				 James Morrison - 100524362
 */
 
+#include <stdio.h>
+#include <account.h>
+#include <fstream>
+#include <regex>
+#include <list>
+#include <iostream>
+#include <string>
+
+
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
-#include <stdio.h>
-#include <list>
-#include <string>
-
-using namespace std;
-
 class Utilities{
 public:
-	string Prompt(string output, string reg = "", list<string> acceptions = {});
-	list<Account> LoadAccountInformation(string accounts_file);
-	Account *GetAccountFromName(string name, list<Account> accounts);
-	Account *GetAccountFromNumber(double number, list<Account> accounts);
+	static std::string prompt(std::string output, std::string reg = "", std::list<std::string> acceptions = {});
+	static std::list<Account> loadAccountInformation(std::string accounts_file);
+	static Account *getAccountFromName(std::string name, std::list<Account> accounts);
+	static Account *getAccountFromNumber(double number, std::list<Account> accounts);
 };
 
 #endif

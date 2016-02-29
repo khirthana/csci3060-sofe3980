@@ -9,27 +9,25 @@ authors: Khirthana Subramanian - 100453865
 
 #include <string>
 
-using namespace std;
-
 class Account{
 private:
-	string account_name;
+	std::string account_name;
 	double account_number;
 	double account_balance;
-	string account_type;
-  string account_status;
+	std::string account_type;
+	std::string account_status;
 
 public:
-	Account(string  number, string name, string status, string balance , string type);
+	Account(std::string number, std::string name, std::string status, std::string balance , std::string type);
 
 	double getBalance();
-	string getAccountType();
-	string getAccountStatus();
-	string getAccountName();
+	std::string getAccountType();
+	std::string getAccountStatus();
+	std::string getAccountName();
 	double getAccountNumber();
 	void setBalance(double balance);
-	void setAccountType(string type);
-	void setAccountStatus(string status);
+	void setAccountType(std::string type);
+	void setAccountStatus(std::string status);
 };
 
 #endif

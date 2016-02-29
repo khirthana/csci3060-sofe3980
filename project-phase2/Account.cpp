@@ -7,59 +7,53 @@ This class contains functions to retrieve and store account information
 */
 
 #include <stdio.h>
+#include <account.h>
 #include <iostream>
 #include <string>
 #include <fstream>
 
-using namespace std;
+Account::Account(std::string number, std::string name, std::string status, std::string  balance , std::string type){
+	this->account_name = name;
+	this->account_number = std::stod(number);
+	this->account_type = type;
+	this->account_status = status;
+	this->account_balance= std::stod(balance);
+}
 
-class Account{
+double Account::getBalance(){
+	//read through the accounts file & store the current balance of account holder
+	return this->account_balance;
+}
 
-private:
-	string account_name;
-	double account_number;
-	double account_balance;
-	string account_type;
-	string account_status;
+std::string Account::getAccountType(){
+	//read through the accounts file & store the account type of account holder (S/NS)
+	return this->account_type;
+}
 
-public:
-	Account(string number,string name, string status, string  balance , string type){
-		this->account_name = name;
-		this->account_number = atoi(number.c_str());
-		this->account_type = type;
-		this->account_status = status;
-		this->account_balance = atof(balance.c_str());
-	}
+std::string Account::getAccountStatus(){
+	//read through the accounts file & store the status of account holder (A/D)
+	return this->account_status;
+}
 
-	double GetBalance(){
-		return this->account_balance;
-	}
+std::string Account::getAccountName(){
+	return this->account_name;
+}
 
-	string GetAccountType(){
-		return this->account_type;
-	}
+double Account::getAccountNumber(){
+	return this->account_number;
+}
 
-	string GetAccountStatus(){
-		return this->account_status;
-	}
+void Account::setBalance(double balance){
+	//read through the accounts file & store the current balance of account holder
+	this->account_balance = balance;
+}
 
-	string getAccountName(){
-		return this->account_name;
-	}
+void Account::setAccountType(std::string type){
+	//read through the accounts file & store the account type of account holder (S/NS)
+	this->account_type = type;
+}
 
-	double getAccountNumber(){
-		return this->account_number;
-	}
-
-	void setBalance(double balance){
-		this->account_balance = balance;
-	}
-
-	void setAccountType(string type){
-		this->account_type = type;
-	}
-
-	void setAccountStatus(string status){
-		this->account_status = status;
-	}
-};
+void Account::setAccountStatus(std::string status){
+	//read through the accounts file & store the status of account holder (A/D)
+	this->account_status = status;
+}
