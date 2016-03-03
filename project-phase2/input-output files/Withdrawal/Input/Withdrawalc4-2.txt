@@ -1,7 +1,6 @@
 login
 admin
 Withdrawal
-Jaina Patel
-00001
-4999.90
-logout
+John Doe
+00008
+5000.00
