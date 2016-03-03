@@ -1,5 +1,5 @@
 login
 admin
 create
-James Morrison
+John Doe
 logout
