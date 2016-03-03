@@ -1,3 +1,4 @@
 Login successful.
 Please Enter the Name of the Account Holder: 
-Error, The Name Specified Already Exists in the System.
+Please Enter the Initial Balance for the account: 
+Account created successfully.
