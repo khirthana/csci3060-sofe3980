@@ -23,6 +23,10 @@ public:
 	std::string transaction;
 	std::string transactions_log  = "";
 	std::string transaction_file_name;
+	double withdrawal_limit;
+	double transfer_limit;
+	double paybill_limit;
+	std::string transaction_acceptions=	"withdrawal|Withdrawal|transfer|Transfer|paybill|Paybill|deposit|Deposit|create|Create|delete|Delete|enable|Enable|disable|Disable|changeplan|Changeplan|logout|Logout";
 
 	//Utilities utility_functions;
 
@@ -44,6 +48,7 @@ public:
 	void ChangePlan();
 	void Logout();
 	void TransactionCall(string transaction);
+	int main(int argc, char *argv[]);
 };
 
 #endif

@@ -29,7 +29,7 @@ void AccountManager::Login(){
 		while(input_valid==false){
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 				Utilities::Prompt("Invalid Account Name.");
@@ -38,7 +38,7 @@ void AccountManager::Login(){
 			Utilities::Prompt("Valid Account Name.");
 				input_valid=true;
 
-				transaction=Utilities::Prompt("Enter next transaction: ");//appropriate function will be called to compute transaction request
+				transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);//appropriate function will be called to compute transaction request
 				TransactionCall(transaction);
 			}
 		}
@@ -54,7 +54,7 @@ void AccountManager::Withdrawal(){
 		while(input_valid==false){
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 				Utilities::Prompt("Invalid Account Name.");
@@ -71,51 +71,64 @@ void AccountManager::Withdrawal(){
 	while(input_number_valid==false){
 		account_number = (Utilities::Prompt("Please Enter the Account Number: ","\\d{5}"));
 
-		if (account_number != this->current_account->getAccountNumber()){
+		if (account_number != this->current_account->GetAccountNumber()){
 					Utilities::Prompt("Input Account Number is invalid.");
 		}else{
 			input_number_valid=true;
 		}
 	}
 
-double withdrawal_amount;
-withdrawal_amount= stod(Utilities::Prompt("Please Enter the intial Account Balance: ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
+double withdrawal_amount=0;
+while(withdrawal_amount<=0){
+	withdrawal_amount= stod(Utilities::Prompt("Please Enter the Withdrawal Amount: ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
+	Utilities::Prompt("Amount should be more than 0$");
+}
 
-if(this->current_account->getAccountStatus()=="A"){
+double current_balance = this->current_account->GetBalance();
+
+if(this->current_account->GetAccountStatus()=="A"){
 	//transaction fee is charged
-	if(this->current_account->getAccountType()=="S"){
-		current_account->setBalance(current_balance-0.05);
+	if(this->current_account->GetAccountType()=="S"){
+		current_account->SetBalance(current_balance-0.05);
 	}else{
-		current_account->setBalance(current_balance-0.10);
+		current_account->SetBalance(current_balance-0.10);
+	}
+	if(session_type=="standard"){
+	withdrawal_limit=withdrawal_limit+withdrawal_amount;
+}
+		if(session_type=="admin"||withdrawal_limit<500){
+			if (current_balance > withdrawal_amount){
+				current_account->SetBalance(current_balance-withdrawal_amount);
+				Utilities::Prompt("Transaction successful.");
+
+				Utilities::Prompt("Transaction fee deducted.");
+
+				//adds withdrawal transaction information in transactions_log list
+				this->transactions_log.append("01 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+to_string(withdrawal_amount)+" "+this->current_account->GetAccountType()+"\n");
+
+				transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
+				TransactionCall(transaction);
+			}
+	}else{
+		Utilities::Prompt("Withdrawal unsuccessful.");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
+		TransactionCall(transaction);
+
+		if(session_type=="standard"){
+		withdrawal_limit=withdrawal_limit-withdrawal_amount;
 	}
 
-	if (current_balance > withdrawal_amount){
-		current_account->setBalance(current_balance-withdrawal_amount);
-		Utilities::Prompt("Transaction successful.");
-
-		Utilities::Prompt("Transaction fee deducted.");
-
-		//adds withdrawal transaction information in transactions_log list
-		this->transactions_log.append("01 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+to_string(withdrawal_amount)+" "+this->current_account->getAccountType()+"\n");
-
-		transaction=Utilities::Prompt("Enter next transaction: ");
-		TransactionCall(transaction);
-	}else{
-		Utilities::Prompt("Insufficient funds.");
-		transaction=Utilities::Prompt("Enter next transaction: ");
-		TransactionCall(transaction);
-
 		//transaction fee is reimboursed as transaction is denied
-		if(this->current_account->getAccountType()=="S"){
-			current_account->setBalance(current_balance+0.05);
+		if(this->current_account->GetAccountType()=="S"){
+			current_account->SetBalance(current_balance+0.05);
 		}else{
-			current_account->setBalance(current_balance+0.10);
+			current_account->SetBalance(current_balance+0.10);
 		}
 			Utilities::Prompt("Transaction fee not deducted.");
 	}
 }else{
-Utilities::Prompt("Transaction unsuccessful. Account is already disabled.");
-transaction=Utilities::Prompt("Enter next transaction: ");
+Utilities::Prompt("Transaction unsuccessful. Account is disabled.");
+transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 TransactionCall(transaction);
 }
 }
@@ -129,7 +142,7 @@ void AccountManager::Transfer(){
 		while(input_valid==false){
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 					Utilities::Prompt("Invalid Account Name.");
@@ -145,20 +158,21 @@ void AccountManager::Transfer(){
 		while(input_number_valid==false){
 			account_number = (Utilities::Prompt("Please Enter the Account Number: ","\\d{5}"));
 
-			if (account_number != this->current_account->getAccountNumber()){
+			if (account_number != this->current_account->GetAccountNumber()){
 				Utilities::Prompt("Input Account Number is invalid.");
 			}else{
 				input_number_valid=true;
 			}
 		}
 
+		Account* transfer_account;
 		//prompts account transferred to; verify if account number is valid in current accounts list; if invalid prompts again
 		bool input_number_to_valid=false;
 		while(input_number_to_valid==false){
 			string account_number_to = "";
 			account_number_to = (Utilities::Prompt("Please Enter the account transferred to: ","\\d{5}"));
 
-			Account* transfer_account = Utilities::GetAccountFromNumber(account_number_to,accounts_in_file);
+			transfer_account = Utilities::GetAccountFromNumber(account_number_to,accounts_in_file);
 			if (transfer_account == nullptr){
 				Utilities::Prompt("Input Account Number transferred to is invalid.");
 			}else{
@@ -168,47 +182,55 @@ void AccountManager::Transfer(){
 
 	double transfer_amount = 0;
 
-	transfer_amount= stod(Utilities::Prompt("Please Enter the intial Account Balance: ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
-
-	double current_balance = this->current_account->getBalance();
-if(this->current_account->getAccountStatus()=="A"){
-	//transaction fee is charged
-	if(this->current_account->getAccountType()=="S"){
-		current_account->setBalance(current_balance-0.05);
-	}else{
-		current_account->setBalance(current_balance-0.10);
+	while(transfer_amount<=0){
+	transfer_amount= stod(Utilities::Prompt("Please Enter the Transfer Amount: ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
+	Utilities::Prompt("Amount should be more than 0$");
 	}
 
-	if (current_balance > transfer_amount){
-		//transfer amount to account2 from account1 (update account balance)
-		current_account->setBalance(current_balance-transfer_amount);
-		Utilities::Prompt("Transaction successful.");
-
-		Utilities::Prompt("Transaction fee deducted.");
-
-		//adds transfer transaction information in transactions_log list
-		this->transactions_log.append("01 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+to_string(transfer_amount)+" "+this->current_account->getAccountType()+"\n");
-		this->transactions_log.append("04 "+transfer_account->getAccountName()+" "+to_string(transfer_account->getAccountNumber())+" "+to_string(transfer_amount)+" "+transfer_account->getAccountType()+"\n");
-
-		transaction=Utilities::Prompt("Enter next transaction: ");
-		TransactionCall(transaction);
-
+	double current_balance = this->current_account->GetBalance();
+if(this->current_account->GetAccountStatus()=="A"){
+	//transaction fee is charged
+	if(this->current_account->GetAccountType()=="S"){
+		current_account->SetBalance(current_balance-0.05);
 	}else{
-		Utilities::Prompt("Insufficient funds.");
-		transaction=Utilities::Prompt("Enter next transaction: ");
-		TransactionCall(transaction);
+		current_account->SetBalance(current_balance-0.10);
+	}
+if(session_type=="standard"){
+	transfer_limit=transfer_limit+transfer_amount;
+}
+		if(session_type=="admin"||transfer_limit<1000){
+			if ((current_balance > transfer_amount)&&((transfer_account->GetBalance())<99999.99)){
+				//transfer amount to account2 from account1 (update account balance)
+				current_account->SetBalance(current_balance-transfer_amount);
+				Utilities::Prompt("Transaction successful.");
 
+				Utilities::Prompt("Transaction fee deducted.");
+
+				//adds transfer transaction information in transactions_log list
+				this->transactions_log.append("01 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+to_string(transfer_amount)+" "+this->current_account->GetAccountType()+"\n");
+				this->transactions_log.append("04 "+transfer_account->GetAccountName()+" "+(transfer_account->GetAccountNumber())+" "+to_string(transfer_amount)+" "+transfer_account->GetAccountType()+"\n");
+
+				transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
+				TransactionCall(transaction);
+			}
+	}else{
+		Utilities::Prompt("Transfer unsuccessful.");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
+		TransactionCall(transaction);
+		if(session_type=="standard"){
+			transfer_limit=transfer_limit-transfer_amount;
+		};
 		//transaction fee is reimboursed as transaction is denied
-		if(this->current_account->getAccountType()=="S"){
-			current_account->setBalance(current_balance+0.05);
+		if(this->current_account->GetAccountType()=="S"){
+			current_account->SetBalance(current_balance+0.05);
 		}else{
-			current_account->setBalance(current_balance+0.10);
+			current_account->SetBalance(current_balance+0.10);
 		}
 			Utilities::Prompt("Transaction fee not deducted.");
 	}
 }else{
-Utilities::Prompt("Transaction unsuccessful. Account is already disabled.");
-transaction=Utilities::Prompt("Enter next transaction: ");
+Utilities::Prompt("Transaction unsuccessful. Account is disabled.");
+transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 TransactionCall(transaction);
 }
 }
@@ -222,7 +244,7 @@ void AccountManager::Paybill(){
 		while(input_valid==false){
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 				Utilities::Prompt("Invalid Account Name.");
@@ -239,7 +261,7 @@ void AccountManager::Paybill(){
 		while(input_number_valid==false){
 			account_number =(Utilities::Prompt("Please Enter the Account Number: ","\\d{5}"));
 
-			if (account_number != this->current_account->getAccountNumber()){
+			if (account_number != this->current_account->GetAccountNumber()){
 				Utilities::Prompt("Input Account Number is invalid.");
 			}else{
 				input_number_valid=true;
@@ -250,47 +272,57 @@ void AccountManager::Paybill(){
 	company_paidto=Utilities::Prompt("Please Enter the Company initial paid to: ","[A-z]{2}");
 
 	double amount_to_pay = 0;
-	amount_to_pay=stod(Utilities::Prompt("Please Enter the intial Account Balance: ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
+	while(amount_to_pay<=0){
+			amount_to_pay=stod(Utilities::Prompt("Please Enter the Amount to pay ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
+			Utilities::Prompt("Amount should be more than 0$");
+	}
 
-	double current_balance = this->current_account->getBalance();
+	double current_balance = this->current_account->GetBalance();
 
-	if(this->current_account->getAccountStatus()=="A"){
+	if(this->current_account->GetAccountStatus()=="A"){
 		//transaction fee is charged
-		if(this->current_account->getAccountType()=="S"){
-			current_account->setBalance(current_balance-0.05);
+		if(this->current_account->GetAccountType()=="S"){
+			current_account->SetBalance(current_balance-0.05);
 		}else{
-			current_account->setBalance(current_balance-0.10);
+			current_account->SetBalance(current_balance-0.10);
 		}
+		if(session_type=="standard"){
+		paybill_limit=paybill_limit+amount_to_pay;
+		}
+		if(session_type=="admin"||paybill_limit<2000){
+			if (current_balance > amount_to_pay){
+				//paybill amount to company (update account balance)
+				current_account->SetBalance(current_balance-amount_to_pay);
+				Utilities::Prompt("Transaction successful.");
 
-		if (current_balance > amount_to_pay){
-			//paybill amount to company (update account balance)
-			current_account->setBalance(current_balance-amount_to_pay);
-			Utilities::Prompt("Transaction successful.");
+				Utilities::Prompt("Transaction fee deducted.");
 
-			Utilities::Prompt("Transaction fee deducted.");
+				//adds paybill transaction information in transactions_log list
+				this->transactions_log.append("03 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+to_string(amount_to_pay)+" "+this->current_account->GetAccountType()+"\n");
 
-			//adds paybill transaction information in transactions_log list
-			this->transactions_log.append("03 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+to_string(amount_to_pay)+" "+this->current_account->getAccountType()+"\n");
-
-			transaction=Utilities::Prompt("Enter next transaction: ");
-			TransactionCall(transaction);
-
+				transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
+				TransactionCall(transaction);
+			}
 		}else{
-			Utilities::Prompt("Insufficient funds.");
-			transaction=Utilities::Prompt("Enter next transaction: ");
+			Utilities::Prompt("Paybill unsuccessful.");
+			transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 			TransactionCall(transaction);
+
+			if(session_type=="standard"){
+			paybill_limit=paybill_limit-amount_to_pay;
+			}
 
 			//transaction fee is reimboursed as transaction is denied
-			if(this->current_account->getAccountType()=="S"){
-				current_account->setBalance(current_balance+0.05);
+			if(this->current_account->GetAccountType()=="S"){
+				current_account->SetBalance(current_balance+0.05);
 			}else{
-				current_account->setBalance(current_balance+0.10);
+				current_account->SetBalance(current_balance+0.10);
 			}
 				Utilities::Prompt("Transaction fee not deducted.");
 		}
 }else{
 	Utilities::Prompt("Transaction unsuccessful. Account is already disabled.");
-	transaction=Utilities::Prompt("Enter next transaction: ");
+	transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 	TransactionCall(transaction);
 	}
 }
@@ -304,7 +336,7 @@ void AccountManager::Deposit(){
 		while(input_valid==false){
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 				Utilities::Prompt("Invalid Account Name.");
@@ -321,7 +353,7 @@ void AccountManager::Deposit(){
 		while(input_number_valid==false){
 			account_number = (Utilities::Prompt("Please Enter the Account Number: ","\\d{5}"));
 
-			if (account_number != this->current_account->getAccountNumber()){
+			if (account_number != this->current_account->GetAccountNumber()){
 				Utilities::Prompt("Input Account Number is invalid.");
 			}else{
 				input_number_valid=true;
@@ -329,46 +361,51 @@ void AccountManager::Deposit(){
 		}
 
 	double amount_deposit = 0;
-	amount_deposit=stod(Utilities::Prompt("Please Enter the intial Account Balance: ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
-	double current_balance = this->current_account->getBalance();
+	while(amount_deposit<=0){
+		amount_deposit=stod(Utilities::Prompt("Please Enter the Amount to deposit: ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
+		Utilities::Prompt("Amount should be more than 0$");
+	}
 
-	if(this->current_account->getAccountStatus()=="A"){
+
+	double current_balance = this->current_account->GetBalance();
+
+	if(this->current_account->GetAccountStatus()=="A"){
 		//transaction fee is charged
-		if(this->current_account->getAccountType()=="S"){
-			current_account->setBalance(current_balance-0.05);
+		if(this->current_account->GetAccountType()=="S"){
+			current_account->SetBalance(current_balance-0.05);
 		}else{
-			current_account->setBalance(current_balance-0.10);
+			current_account->SetBalance(current_balance-0.10);
 		}
 
-		if (current_balance > amount_deposit){
+		if (current_balance <99999.99){
 			//deposit amount (update account balance)
-			current_account->setBalance(current_balance+amount_deposit);
+			current_account->SetBalance(current_balance+amount_deposit);
 			Utilities::Prompt("Transaction successful.");
 
 			Utilities::Prompt("Transaction fee deducted.");
 
 			//adds deposit transaction information in transactions_log list
-			this->transactions_log.append("04 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+to_string(amount_deposit)+" "+this->current_account->getAccountType()+"\n");
+			this->transactions_log.append("04 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+to_string(amount_deposit)+" "+this->current_account->GetAccountType()+"\n");
 
-			transaction=Utilities::Prompt("Enter next transaction: ");
+			transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 			TransactionCall(transaction);
 
 		}else{
 			Utilities::Prompt("Insufficient funds.");
-			transaction=Utilities::Prompt("Enter next transaction: ");
+			transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 			TransactionCall(transaction);}
 
 			//transaction fee is reimboursed as transaction is denied
-			if(this->current_account->getAccountType()=="S"){
-				current_account->setBalance(current_balance+0.05);
+			if(this->current_account->GetAccountType()=="S"){
+				current_account->SetBalance(current_balance+0.05);
 			}else{
-				current_account->setBalance(current_balance+0.10);
+				current_account->SetBalance(current_balance+0.10);
 			}
 
 			Utilities::Prompt("Transaction fee not deducted.");
 	}else{
 		Utilities::Prompt("Transaction unsuccessful. Account is already disabled.");
-		transaction=Utilities::Prompt("Enter next transaction: ");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 		TransactionCall(transaction);
 		}
 }
@@ -378,18 +415,20 @@ void AccountManager::CreateAccount(){
 //create new account with unique account number
 
 	if(session_type=="admin"){
-account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
+		account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
 		//initial balance
 		double account_balance = 0;
 		account_balance=stod(Utilities::Prompt("Please Enter the intial Account Balance: ","\\d{5}\\.\\d{2}|\\d{1}\\.\\d{2}|\\.\\d{2}"));
 
 		//create account with unique Account Number; go through account numbers in accounts & select unique account number
+		Account* account_verify;
 		bool account_number_valid=false;
+		string new_account_number;
 		while(account_number_valid==false){
 		srand(time(NULL));
 		int random_number=(rand()%10000)+1;
-		string new_account_number=Integer.parseInt(random_number);
+		new_account_number=to_string(random_number);
 		if(new_account_number.size()<5)
 		{
 			switch (new_account_number.size()) {
@@ -407,22 +446,22 @@ account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: "
 						break;
   			}
 		}
-		Account* account_verify = Utilities::GetAccountFromNumber(new_account_number,accounts_in_file);
+	account_verify = Utilities::GetAccountFromNumber(new_account_number,accounts_in_file);
 
-		if (this->account_verify == nullptr){
+		if (account_verify == nullptr){
 			account_number_valid=true;
 		}
 	}
 		Utilities::Prompt("Transaction successful. Account created");
 
 		//adds account information in transactions_log list
-		this->transactions_log.append("05 "+account_name+" "+to_string(new_account_number)+" "+to_string(account_balance)+" "+"N"+"\n");
+		this->transactions_log.append("05 "+account_name+" "+(new_account_number)+" "+to_string(account_balance)+" "+"N"+"\n");
 
-		transaction=Utilities::Prompt("Enter next transaction: ");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 		TransactionCall(transaction);
 	}else{
 		Utilities::Prompt("Transaction unsuccessful. Priviledge transactions are accepted in admin login session");
-		transaction=Utilities::Prompt("Enter next transaction: ");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 		TransactionCall(transaction);
 	}
 }
@@ -435,7 +474,7 @@ void AccountManager::DeleteAccount(){
 		bool input_valid=false;
 		while(input_valid==false){
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 				 Utilities::Prompt("Invalid Account Name.");
@@ -451,7 +490,7 @@ void AccountManager::DeleteAccount(){
 		while(input_number_valid==false){
 			account_number = (Utilities::Prompt("Please Enter the Account Number: ","\\d{5}"));
 
-			if (account_number != this->current_account->getAccountNumber()){
+			if (account_number != this->current_account->GetAccountNumber()){
 				 Utilities::Prompt("Input Account Number is invalid.");
 			}else{
 				input_number_valid=true;
@@ -459,18 +498,18 @@ void AccountManager::DeleteAccount(){
 		}
 
 	//delete account from accounts list
-	accounts_in_file.erase(current_account);
+	accounts_in_file.remove(current_account);
 
 	Utilities::Prompt("Transaction successful. Account deleted");
 
 	//if account deleted; add deleted account information in transactions_log list
-	this->transactions_log.append("06 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+"      "+this->current_account->getAccountType()+"\n");
+	this->transactions_log.append("06 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+"      "+this->current_account->GetAccountType()+"\n");
 
-	transaction=Utilities::Prompt("Enter next transaction: ");
+	transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 	TransactionCall(transaction);
 }else{
 		Utilities::Prompt("Transaction unsuccessful. Priviledge transactions are accepted in admin login session");
-		transaction=Utilities::Prompt("Enter next transaction: ");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 		TransactionCall(transaction);
 	}
 	}
@@ -486,7 +525,7 @@ void AccountManager::EnableAccount(){
 		while(input_valid==false){
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 				 Utilities::Prompt("Invalid Account Name.");
@@ -502,32 +541,32 @@ void AccountManager::EnableAccount(){
 		while(input_number_valid==false){
 			account_number = (Utilities::Prompt("Please Enter the Account Number: ","\\d{5}"));
 
-			if (account_number != this->current_account->getAccountNumber()){
+			if (account_number != this->current_account->GetAccountNumber()){
 				Utilities::Prompt("Input Account Number is invalid.");
 			}else{
 				input_number_valid=true;
 			}
 		}
 
-		if(this->current_account->getAccountStatus()=="D"){
+		if(this->current_account->GetAccountStatus()=="D"){
 				//enabe account; account status from D to A in accounts list
-				current_account->setAccountStatus("A");
+				current_account->SetAccountStatus("A");
 			}else{
 				Utilities::Prompt("Transaction unsuccessful. Account is already active.");
-				transaction=Utilities::Prompt("Enter next transaction: ");
+				transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 				TransactionCall(transaction);
 			}
 
 			Utilities::Prompt("Transaction successful. Account Enabled");
 
 		//if account enabled; add enabed account information in transactions_log list
-		this->transactions_log.append("09 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+to_string(this->current_account->getBalance())+" "+this->current_account->getAccountStatus()+"\n");
+		this->transactions_log.append("09 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+to_string(this->current_account->GetBalance())+" "+this->current_account->GetAccountStatus()+"\n");
 
-		transaction=Utilities::Prompt("Enter next transaction: ");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 		TransactionCall(transaction);
 	}else{
 			Utilities::Prompt("Transaction unsuccessful. Priviledge transactions are accepted in admin login session");
-			transaction=Utilities::Prompt("Enter next transaction: ");
+			transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 			TransactionCall(transaction);
 		}
 	}
@@ -542,7 +581,7 @@ void AccountManager::DisableAccount(){
 		while(input_valid==false){
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 								 Utilities::Prompt("Invalid Account Name.");
@@ -556,30 +595,30 @@ void AccountManager::DisableAccount(){
 		//prompts account number; if invalid prompts again
 		bool input_number_valid=false;
 		while(input_number_valid==false){
-			account_number = (Utilities::prompt("Please Enter the Account Number: ","\\d{5}"));
+			account_number = (Utilities::Prompt("Please Enter the Account Number: ","\\d{5}"));
 
-			if (account_number != this->current_account->getAccountNumber()){
+			if (account_number != this->current_account->GetAccountNumber()){
 				Utilities::Prompt("Input Account Number is invalid.");
 			}else{
 				input_number_valid=true;
 			}
 		}
 
-	if(this->current_account->getAccountStatus()=="A"){
+	if(this->current_account->GetAccountStatus()=="A"){
 			//disable account; account status from A to D
-			current_account->setAccountStatus("D");
+			current_account->SetAccountStatus("D");
 		}else{
 			Utilities::Prompt("Transaction unsuccessful. Account is already disabled.");
-			transaction=Utilities::Prompt("Enter next transaction: ");
+			transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 			TransactionCall(transaction);
 		}
 
 		Utilities::Prompt("Transaction successful. Account disabled");
 
 		//if account disabled; add disabled account information in transactions_log list
-		this->transactions_log.append("07 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+to_string(this->current_account->getBalance())+" "+this->current_account->getAccountStatus()+"\n");
+		this->transactions_log.append("07 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+to_string(this->current_account->GetBalance())+" "+this->current_account->GetAccountStatus()+"\n");
 
-		transaction=Utilities::Prompt("Enter next transaction: ");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 		TransactionCall(transaction);
 	}else{
 			Utilities::Prompt("Transaction unsuccessful. Priviledge transactions are accepted in admin login session");
@@ -599,7 +638,7 @@ void AccountManager::ChangePlan(){
 
 			account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","[A-z\s]{1,20}");
 
-			current_account = Utilities::getAccountFromName(account_name,accounts_in_file);
+			current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 			if (this->current_account == nullptr){
 					 Utilities::Prompt("Invalid Account Name.");
@@ -615,7 +654,7 @@ void AccountManager::ChangePlan(){
 		while(input_number_valid==false){
 			account_number =(Utilities::Prompt("Please Enter the Account Number: ","\\d{5}"));
 
-			if (account_number != this->current_account->getAccountNumber()){
+			if (account_number != this->current_account->GetAccountNumber()){
 				Utilities::Prompt("Input Account Number is invalid.");
 			}else{
 				input_number_valid=true;
@@ -623,22 +662,22 @@ void AccountManager::ChangePlan(){
 		}
 
 		//account plan is changed depending on their current plan
-		if(current_account->getAccountType()=="S"){
-				current_account->setAccountType("N");
+		if(current_account->GetAccountType()=="S"){
+				current_account->SetAccountType("N");
 		}else{
-			current_account->setAccountType("S");
+			current_account->SetAccountType("S");
 		}
 
 		Utilities::Prompt("Transaction successful. Account type changed");
 
 		//if account plan is changed; add account plan information in transactions_log list
-		this->transactions_log.append("08 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+to_string(this->current_account->getBalance())+" "+this->current_account->getAccountType()+"\n");
+		this->transactions_log.append("08 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+to_string(this->current_account->GetBalance())+" "+this->current_account->GetAccountType()+"\n");
 
-		transaction=Utilities::Prompt("Enter next transaction: ");
+		transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 		TransactionCall(transaction);
 		}else{
 			Utilities::Prompt("Transaction unsuccessful. Priviledge transactions are accepted in admin login session");
-			transaction=Utilities::Prompt("Enter next transaction: ");
+			transaction=Utilities::Prompt("Enter next transaction: ",transaction_acceptions);
 			TransactionCall(transaction);
 		}
 	}
@@ -647,15 +686,24 @@ void AccountManager::ChangePlan(){
 
 void AccountManager::Logout(){
 	//end session
+	withdrawal_limit=0;
+	transfer_limit=0;
+	paybill_limit=0;
 
 	//adds logout information in transactions_log list
-	this->transactions_log.append("00 "+this->current_account->getAccountName()+" "+to_string(this->current_account->getAccountNumber())+" "+"      "+this->current_account->getAccountType()+"\n");
+	this->transactions_log.append("00 "+this->current_account->GetAccountName()+" "+(this->current_account->GetAccountNumber())+" "+"      "+this->current_account->GetAccountType()+"\n");
 
 	//output transaction file log
 	fstream outfile;
 	outfile.open(transaction_file_name);
 	outfile << this->transactions_log << endl;
 	outfile.close();
+
+	Utilities::Prompt("Logout successful.");
+	transaction=Utilities::Prompt("Enter next transaction: ",{"login|Login"});
+	Utilities::Prompt("Login successful.");
+	Login();
+
 }
 
 //calls appropriate funstion to proceed transaction, if invalid transaction input then prompts to input next transaction again
@@ -672,7 +720,7 @@ void AccountManager::TransactionCall(string transaction_request){
 			 Transfer();
 			 transaction_valid=true;
 		}else	if(transaction_request=="paybill"||transaction_request=="Paybill"){
-			 paybill();
+			 Paybill();
 			 transaction_valid=true;
 		}else if(transaction_request=="deposit"||transaction_request=="Deposit"){
 			Deposit();
@@ -704,34 +752,24 @@ void AccountManager::TransactionCall(string transaction_request){
 }
 
 
-int main(int argc, char *argv[])
-{
+int AccountManager::main(int argc, char *argv[]){
 	string accounts_file_name;
 
 	//reads command line arguments and stores file names
 	for(int i = 0; i < argc; i++){
 		 accounts_file_name=argv[1];
-		 transaction_file_name=argv[2];
+		  transaction_file_name=argv[2];
 	 }
 
 	//loads accounts information from current accounts file
-	this->accounts_in_file = Utilities::loadAccountInformation(accounts_file_name);
+	this->accounts_in_file = Utilities::LoadAccountInformation(accounts_file_name);
 
 	//prompts to enter transaction and if input is different than login, prompts again to login
-	bool login_valid=false;
-	while(login_valid==false){
+		transaction=Utilities::Prompt("Enter transaction to begin: ",{"login|Login"});
+		Utilities::Prompt("Login successful.");
+		Login();
 
-		transaction=Utilities::Prompt("Enter transaction to begin: ");
-		TransactionCall(transaction);
 
-		if(transaction=="login"){
-			Utilities::Prompt("Login successful.");
-			login_valid=true;
-			Login();
-		}else{
-			Utilities::Prompt("User have to login in order to process further transactions.");
-		}
-	}
 
 	return 0;
 }
