@@ -5,7 +5,7 @@ authors: Khirthana Subramanian - 100453865
 */
 
 #include <stdio.h>
-#include <account.h>
+#include "Account.h"
 #include <fstream>
 #include <regex>
 #include <list>
@@ -18,10 +18,10 @@ authors: Khirthana Subramanian - 100453865
 
 class Utilities{
 public:
-	static std::string prompt(std::string output, std::string reg = "", std::list<std::string> acceptions = {});
-	static std::list<Account> loadAccountInformation(std::string accounts_file);
-	static Account *getAccountFromName(std::string name, std::list<Account> accounts);
-	static Account *getAccountFromNumber(double number, std::list<Account> accounts);
+	static std::string Prompt(std::string output, std::string reg = "", std::list<std::string> acceptions = {});
+	static std::list<Account> LoadAccountInformation(std::string accounts_file);
+	static Account *GetAccountFromName(std::string name, std::list<Account> accounts);
+	static Account *GetAccountFromNumber(std::string number, std::list<Account> accounts);
 };
 
 #endif

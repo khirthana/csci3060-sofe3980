@@ -12,7 +12,7 @@ authors: Khirthana Subramanian - 100453865
 class Account{
 private:
 	std::string account_name;
-	double account_number;
+	std::string account_number;
 	double account_balance;
 	std::string account_type;
 	std::string account_status;
@@ -20,14 +20,14 @@ private:
 public:
 	Account(std::string number, std::string name, std::string status, std::string balance , std::string type);
 
-	double getBalance();
-	std::string getAccountType();
-	std::string getAccountStatus();
-	std::string getAccountName();
-	double getAccountNumber();
-	void setBalance(double balance);
-	void setAccountType(std::string type);
-	void setAccountStatus(std::string status);
+	double GetBalance();
+	std::string GetAccountType();
+	std::string GetAccountStatus();
+	std::string GetAccountName();
+	std::string GetAccountNumber();
+	void SetBalance(double balance);
+	void SetAccountType(std::string type);
+	void SetAccountStatus(std::string status);
 };
 
 #endif

@@ -7,53 +7,55 @@ This class contains functions to retrieve and store account information
 */
 
 #include <stdio.h>
-#include <account.h>
+#include "Account.h"
 #include <iostream>
 #include <string>
 #include <fstream>
 
-Account::Account(std::string number, std::string name, std::string status, std::string  balance , std::string type){
+using namespace std;
+
+Account::Account(string number, string name, string status, string  balance , string type){
 	this->account_name = name;
-	this->account_number = std::stod(number);
+	this->account_number = number;
 	this->account_type = type;
 	this->account_status = status;
-	this->account_balance= std::stod(balance);
+	this->account_balance= stod(balance);
 }
 
-double Account::getBalance(){
+double Account::GetBalance(){
 	//read through the accounts file & store the current balance of account holder
 	return this->account_balance;
 }
 
-std::string Account::getAccountType(){
+string Account::GetAccountType(){
 	//read through the accounts file & store the account type of account holder (S/NS)
 	return this->account_type;
 }
 
-std::string Account::getAccountStatus(){
+string Account::GetAccountStatus(){
 	//read through the accounts file & store the status of account holder (A/D)
 	return this->account_status;
 }
 
-std::string Account::getAccountName(){
+string Account::GetAccountName(){
 	return this->account_name;
 }
 
-double Account::getAccountNumber(){
+string Account::GetAccountNumber(){
 	return this->account_number;
 }
 
-void Account::setBalance(double balance){
+void Account::SetBalance(double balance){
 	//read through the accounts file & store the current balance of account holder
 	this->account_balance = balance;
 }
 
-void Account::setAccountType(std::string type){
+void Account::SetAccountType(string type){
 	//read through the accounts file & store the account type of account holder (S/NS)
 	this->account_type = type;
 }
 
-void Account::setAccountStatus(std::string status){
+void Account::SetAccountStatus(string status){
 	//read through the accounts file & store the status of account holder (A/D)
 	this->account_status = status;
 }
