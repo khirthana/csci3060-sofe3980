@@ -10,4 +10,4 @@ clang++ -std=c++11 -stdlib=libc++ utilities.cpp -c
 
 clang++ -std=c++11 -stdlib=libc++ account_manager.h
 
-clang++ -std=c++11 -stdlib=libc++ account_manager.cpp Accountsfile.txt TransactionLog.txt
+clang++ -std=c++11 -stdlib=libc++ account_manager.cpp 
