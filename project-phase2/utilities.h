@@ -5,7 +5,7 @@ authors: Khirthana Subramanian - 100453865
 */
 
 #include <stdio.h>
-#include "Account.h"
+#include "account.h"
 #include <fstream>
 #include <regex>
 #include <vector>
