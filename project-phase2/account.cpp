@@ -7,7 +7,7 @@ This class contains functions to retrieve and store account information
 */
 
 #include <stdio.h>
-#include "Account.h"
+#include "account.h"
 #include <iostream>
 #include <string>
 #include <fstream>
