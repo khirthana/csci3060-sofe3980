@@ -7,8 +7,8 @@ This class is meant to contain simplified and modular usages of common functions
  */
 
 #include <stdio.h>
-#include "Account.h"
-#include "Utilities.h"
+#include "account.h"
+#include "utilities.h"
 #include <fstream>
 #include <regex>
 #include <vector>
