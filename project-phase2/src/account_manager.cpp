@@ -13,7 +13,7 @@
 AccountManager::AccountManager() : transactions_log(""), session_type(""), current_account(0) {
 }
 
-void AccountManager::Login(){
+bool AccountManager::Login(){
 	//an example usage of the utility functions
 	this->session_type = Utilities::Prompt("Please Enter the Kind of Session: ","standard|admin");
 
@@ -27,6 +27,7 @@ void AccountManager::Login(){
 			Utilities::Prompt("Invalid Account Name.");
 		}
 	}
+	return true;
 }
 
 void AccountManager::Withdrawal(){
@@ -221,9 +222,9 @@ void AccountManager::ChangePlan(){ // theoretically complete
 	}
 }
 
-void AccountManager::Logout(){
+bool AccountManager::Logout(){
 	//end session
-
+	this->current_account = nullptr;
 	//if logout; add logout information in transactions_log list
 	this->transactions_log.append("00 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+"      "+this->current_account->GetAccountType()+"\n");
 
@@ -232,4 +233,5 @@ void AccountManager::Logout(){
 	outfile.open("transaction_log.txt");
 	outfile << this->transactions_log << std::endl;
 	outfile.close();
+	return false;
 }

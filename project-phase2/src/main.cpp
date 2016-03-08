@@ -5,6 +5,7 @@ authors: Khirthana Subramanian - 100453865
 */
 
 #include "account_manager.h"
+#include "utilities.h"
 #include <string>
 #include <iostream>
 
@@ -12,18 +13,50 @@ using namespace std;
 
 int main(int argc, char **argv) {
 	AccountManager account_manager;
-
-	cout << "Banking System" << endl;
+    bool logged_in;
+	Utilities::Prompt("Banking System\n");
 	
 	string input;
 	while (input != "quit"){
-		cout << "Enter the transaction you want to do this session: ";
+		Utilities::Prompt("Enter the transaction you want to do this session: ");
 		cin >> input;
 
 		if (input == "login") {
-			account_manager.Login();
-		} else {
-			printf("You have to login in order to process transactions\n");
+			logged_in = account_manager.Login();
+		} else if (logged_in) {
+			if (input == "Withdrawl") {
+				account_manager.Withdrawal();
+			}
+			else if (input == "transfer") {
+				account_manager.Transfer();
+			}
+			else if (input == "paybill") {
+				account_manager.Paybill();
+			}
+			else if (input == "deposit") {
+				account_manager.Deposit();
+			}
+			else if (input == "CreateAccount") {
+				account_manager.CreateAccount();
+			}
+			else if (input == "deleteAccount") {
+				account_manager.DeleteAccount();
+			}
+			else if (input == "enableAccount") {
+				account_manager.EnableAccount();
+			}
+			else if (input == "disableAccount") {
+				account_manager.DisableAccount();
+			}
+			else if (input == "changePlan") {
+				account_manager.ChangePlan();
+			}
+			else if (input == "logout") {
+				logged_in = account_manager.Logout();
+			}
+		}
+		else{
+			Utilities::Prompt("You have to login in order to process transactions\n");
 		}
 	}
 	return 0;

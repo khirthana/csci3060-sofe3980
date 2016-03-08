@@ -13,12 +13,11 @@ class AccountManager{
 	std::vector<Account> accounts_in_file;
 	std::string session_type;
 	Account* current_account;
-
-
+	
 public:
 	AccountManager();
 
-	void Login();
+	bool Login();
 	void Withdrawal();
 	void Transfer();
 	void Paybill();
@@ -28,7 +27,7 @@ public:
 	void EnableAccount();
 	void DisableAccount();
 	void ChangePlan();
-	void Logout();
+	bool Logout();
 };
 
 #endif
