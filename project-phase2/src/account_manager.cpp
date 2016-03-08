@@ -20,11 +20,11 @@ bool AccountManager::Login(){
 	this->accounts_in_file = Utilities::LoadAccountInformation("Accountsfile.txt");
 
 	if(this->session_type=="standard"){
-		std::string account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		this->current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
 
 		if (this->current_account == nullptr){
-			Utilities::Prompt("Invalid Account Name.");
+			Utilities::Prompt("Invalid Account Name.\n");
 		}
 	}
 	return true;
@@ -49,10 +49,10 @@ void AccountManager::Withdrawal(){
 	double current_balance = this->current_account->GetBalance();
 	if ( current_balance > withdrawal_amount){
 		current_account->SetBalance(current_balance-withdrawal_amount);
-		Utilities::Prompt("Transaction successful.");
+		Utilities::Prompt("Transaction successful.\n");
 	}
 	else{
-		Utilities::Prompt("Insufficient funds.");
+		Utilities::Prompt("Insufficient funds.\n");
 	}
 
 
@@ -62,10 +62,10 @@ void AccountManager::Withdrawal(){
 
 void AccountManager::Transfer(){
 	if(this->session_type=="admin"){
-		std::string account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		this->current_account = Utilities::GetAccountFromName(account_name,this->accounts_in_file);
 		if (this->current_account == nullptr){
-			Utilities::Prompt("Invalid Account Name.");
+			Utilities::Prompt("Invalid Account Name.\n");
 		}
 	}
 
@@ -84,10 +84,10 @@ void AccountManager::Transfer(){
 
 void AccountManager::Paybill(){
 	if(this->session_type=="admin"){
-		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		this->current_account = Utilities::GetAccountFromName(account_name,this->accounts_in_file);
 		if (this->current_account == nullptr){
-			Utilities::Prompt("Invalid Account Name.");
+			Utilities::Prompt("Invalid Account Name.\n");
 		}
 	}
 
@@ -103,20 +103,38 @@ void AccountManager::Paybill(){
 
 }
 
-void AccountManager::Deposit(){
+void AccountManager::Deposit(){ //theoretically complete
 	if(this->session_type=="admin"){
-		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		this->current_account = Utilities::GetAccountFromName(account_name,this->accounts_in_file);
 		if (this->current_account == nullptr){
-			Utilities::Prompt("Invalid Account Name.");
+			Utilities::Prompt("Invalid Account Name.\n");
+			return void;
+		}
+		else{
+			double deposit = std::stod(Utilities::Prompt("Please Enter Deposit Amount: ","\\d{0,5}"));
+			if (this->current_account->GetBalance() + deposit < 100000){
+				this-current_account->SetBalance(this->current_account->GetBalance() + deposit);
+			}
+			else{
+				Utilities::Prompt("Invalid Amount to Deposit.\n");
+				return void;
+			}
 		}
 	}
-
-	double account_number = std::stod(Utilities::Prompt("Please Enter the Account Number: ","\\d{0,5}"));
-	double amount_deposit = 0;
-
-	//deposit amount
-
+    else{
+		double account_number = std::stod(Utilities::Prompt("Please Enter the Account Number: ","([A-z])\\w+ ([A-z])\\w+"));
+		double amount_deposit = 0;
+		double deposit = std::stod(Utilities::Prompt("Please Enter Deposit Amount: ","\\d{0,5}"));
+		if (this->current_account->GetBalance() + deposit < 100000){
+			this-current_account->SetBalance(this->current_account->GetBalance() + deposit);
+		}
+		else{
+			Utilities::Prompt("Invalid Amount to Deposit.\n");
+			return void;
+		}
+		//deposit amount
+	}
 
 	//if successful deposit; add deposit transaction information in transactions_log list
 	this->transactions_log.append("04 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+std::to_string(amount_deposit)+" "+this->current_account->GetAccountType()+"\n");
@@ -124,7 +142,7 @@ void AccountManager::Deposit(){
 
 void AccountManager::CreateAccount(){
 	if(this->session_type=="admin"){
-		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 
 		//initial balance
 		double account_balance = 0;
@@ -135,13 +153,13 @@ void AccountManager::CreateAccount(){
 		this->transactions_log.append("05 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+std::to_string(this->current_account->GetBalance())+" "+this->current_account->GetAccountType()+"\n");
 	}
 	else{
-		Utilities::Prompt("insufficient privilages.");
+		Utilities::Prompt("insufficient privilages.\n");
 	}
 }
 
 void AccountManager::DeleteAccount(){
 	if(this->session_type=="admin"){
-		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		std::string account_number = Utilities::Prompt("Please Enter the Account Number: ","\\d{0,5}");
 		//delete account from system
 
@@ -149,19 +167,19 @@ void AccountManager::DeleteAccount(){
 		this->transactions_log.append("06 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+"      "+this->current_account->GetAccountType()+"\n");
 	}
 	else{
-		Utilities::Prompt("insufficient privilages.");
+		Utilities::Prompt("insufficient privilages.\n");
 	}
 }
 
 void AccountManager::EnableAccount(){ // theoretically complete
 	if(this->session_type=="admin"){
-		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		std::string account_number = Utilities::Prompt("Please Enter the Account Number: ","\\d{0,5}");
 
 		//enable account; account status from D to A
 		this->current_account = Utilities::GetAccountFromNumber(account_number,this->accounts_in_file);
 		if (this->current_account == nullptr){
-			Utilities::Prompt("Invalid Account Number.");
+			Utilities::Prompt("Invalid Account Number.\n");
 		}
 
 		this->current_account->SetAccountStatus("A"); // Set active
@@ -170,19 +188,19 @@ void AccountManager::EnableAccount(){ // theoretically complete
 		this->transactions_log.append("09 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+std::to_string(this->current_account->GetBalance())+" "+this->current_account->GetAccountStatus()+"\n");
 	}
 	else{
-		Utilities::Prompt("insufficient privilages.");
+		Utilities::Prompt("insufficient privilages.\n");
 	}
 }
 
 void AccountManager::DisableAccount(){ // theoretically complete
 	if(this->session_type=="admin"){
-		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		std::string account_number = Utilities::Prompt("Please Enter the Account Number: ","\\d{0,5}");
 
 		//disable account; account status from A to D
 		this->current_account = Utilities::GetAccountFromNumber(account_number,this->accounts_in_file);
 		if (this->current_account == nullptr){
-			Utilities::Prompt("Invalid Account Number.");
+			Utilities::Prompt("Invalid Account Number.\n");
 		}
 
 		this->current_account->SetAccountStatus("D"); // Set active
@@ -191,19 +209,19 @@ void AccountManager::DisableAccount(){ // theoretically complete
 		this->transactions_log.append("07 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+std::to_string(this->current_account->GetBalance())+" "+this->current_account->GetAccountStatus()+"\n");
 	}
 	else{
-		Utilities::Prompt("insufficient privilages.");
+		Utilities::Prompt("insufficient privilages.\n");
 	}
 }
 
 void AccountManager::ChangePlan(){ // theoretically complete
 	if(this->session_type=="admin"){
-		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		std::string account_number = Utilities::Prompt("Please Enter the Account Number: ","\\d{0,5}");
 		//changeplan for account; account type should be change (S/NS)
 
 		this->current_account = Utilities::GetAccountFromNumber(account_number,this->accounts_in_file);
 		if (this->current_account == nullptr){
-			Utilities::Prompt("Invalid Account Number.");
+			Utilities::Prompt("Invalid Account Number.\n");
 		}
 
 		if (this->current_account->GetAccountStatus() == "S"){
@@ -218,7 +236,7 @@ void AccountManager::ChangePlan(){ // theoretically complete
 
 	}
 	else{
-		Utilities::Prompt("insufficient privilages.");
+		Utilities::Prompt("insufficient privilages.\n");
 	}
 }
 
