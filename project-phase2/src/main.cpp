@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 		if (input == "login") {
 			logged_in = account_manager.Login();
 		} else if (logged_in) {
-			if (input == "Withdrawl") {
+			if (input == "withdrawl") {
 				account_manager.Withdrawal();
 			}
 			else if (input == "transfer") {
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 			else if (input == "deposit") {
 				account_manager.Deposit();
 			}
-			else if (input == "CreateAccount") {
+			else if (input == "createAccount") {
 				account_manager.CreateAccount();
 			}
 			else if (input == "deleteAccount") {

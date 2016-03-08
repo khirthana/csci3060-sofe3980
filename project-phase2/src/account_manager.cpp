@@ -32,10 +32,10 @@ bool AccountManager::Login(){
 
 void AccountManager::Withdrawal(){
 	if(this->session_type=="admin"){
-		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
+		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		this->current_account = Utilities::GetAccountFromName(account_name,this->accounts_in_file);
 		if (this->current_account == nullptr){
-			Utilities::Prompt("Invalid Account Name.");
+			Utilities::Prompt("Invalid Account Name.\n");
 		}
 	}
 

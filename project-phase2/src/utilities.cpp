@@ -27,13 +27,15 @@ std::string Utilities::Prompt(std::string output, std::string reg){
 			std::cout << output;
 
 			std::string input;
-			std::cin >> input;
+			std::cin.ignore(1);
+			std::getline(std::cin,input);
 			try {
 				std::regex re(reg);
 				std::smatch match;
 				
 				std::regex_search(input, match, re);
-				if (match.size() == 1) {
+				
+				if (match.size() >= 1) {
 					return match.str(0);
 				}
 			} catch (std::regex_error& e) {
