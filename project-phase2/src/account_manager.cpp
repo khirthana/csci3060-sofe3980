@@ -36,6 +36,7 @@ void AccountManager::Withdrawal(){
 		this->current_account = Utilities::GetAccountFromName(account_name,this->accounts_in_file);
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Name.\n");
+			return;
 		}
 	}
 
@@ -66,6 +67,7 @@ void AccountManager::Transfer(){
 		this->current_account = Utilities::GetAccountFromName(account_name,this->accounts_in_file);
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Name.\n");
+			return;
 		}
 	}
 
@@ -88,6 +90,7 @@ void AccountManager::Paybill(){
 		this->current_account = Utilities::GetAccountFromName(account_name,this->accounts_in_file);
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Name.\n");
+			return;
 		}
 	}
 
@@ -104,40 +107,42 @@ void AccountManager::Paybill(){
 }
 
 void AccountManager::Deposit(){ //theoretically complete
+	double deposit = 0;
 	if(this->session_type=="admin"){
 		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","([A-z])\\w+ ([A-z])\\w+");
 		this->current_account = Utilities::GetAccountFromName(account_name,this->accounts_in_file);
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Name.\n");
-			return void;
+			return;
 		}
 		else{
-			double deposit = std::stod(Utilities::Prompt("Please Enter Deposit Amount: ","\\d{0,5}"));
+			deposit = std::stod(Utilities::Prompt("Please Enter Deposit Amount: ","\\d{0,5}"));
 			if (this->current_account->GetBalance() + deposit < 100000){
-				this-current_account->SetBalance(this->current_account->GetBalance() + deposit);
+				this->current_account->SetBalance(this->current_account->GetBalance() + deposit);
 			}
 			else{
 				Utilities::Prompt("Invalid Amount to Deposit.\n");
-				return void;
+				return;
 			}
 		}
 	}
     else{
-		double account_number = std::stod(Utilities::Prompt("Please Enter the Account Number: ","([A-z])\\w+ ([A-z])\\w+"));
-		double amount_deposit = 0;
-		double deposit = std::stod(Utilities::Prompt("Please Enter Deposit Amount: ","\\d{0,5}"));
-		if (this->current_account->GetBalance() + deposit < 100000){
-			this-current_account->SetBalance(this->current_account->GetBalance() + deposit);
+		deposit = std::stod(Utilities::Prompt("Please Enter Deposit Amount: ","\\d{0,5}"));
+		if (this->current_account->GetBalance() >= deposit){
+			this->current_account->SetBalance(this->current_account->GetBalance()-deposit);
+			std::string account_number = Utilities::Prompt("Please Enter the Account Number: ","\\d{0,5}");
+			this->current_account = Utilities::GetAccountFromNumber(account_number,this->accounts_in_file);
+	
+			this->current_account->SetBalance(this->current_account->GetBalance() + deposit);
 		}
 		else{
-			Utilities::Prompt("Invalid Amount to Deposit.\n");
-			return void;
+			Utilities::Prompt("Insufficient Funds.\n");
 		}
 		//deposit amount
 	}
 
 	//if successful deposit; add deposit transaction information in transactions_log list
-	this->transactions_log.append("04 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+std::to_string(amount_deposit)+" "+this->current_account->GetAccountType()+"\n");
+	this->transactions_log.append("04 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+std::to_string(deposit)+" "+this->current_account->GetAccountType()+"\n");
 }
 
 void AccountManager::CreateAccount(){
@@ -180,6 +185,7 @@ void AccountManager::EnableAccount(){ // theoretically complete
 		this->current_account = Utilities::GetAccountFromNumber(account_number,this->accounts_in_file);
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Number.\n");
+			return;
 		}
 
 		this->current_account->SetAccountStatus("A"); // Set active
@@ -201,6 +207,7 @@ void AccountManager::DisableAccount(){ // theoretically complete
 		this->current_account = Utilities::GetAccountFromNumber(account_number,this->accounts_in_file);
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Number.\n");
+			return;
 		}
 
 		this->current_account->SetAccountStatus("D"); // Set active
@@ -222,6 +229,7 @@ void AccountManager::ChangePlan(){ // theoretically complete
 		this->current_account = Utilities::GetAccountFromNumber(account_number,this->accounts_in_file);
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Number.\n");
+			return;
 		}
 
 		if (this->current_account->GetAccountStatus() == "S"){

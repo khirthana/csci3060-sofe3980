@@ -57,40 +57,37 @@ std::vector<Account> Utilities::LoadAccountInformation(std::string accounts_file
 	std::vector<Account> accounts;
 	std::ifstream infile(accounts_file);
 
-	while (getline(infile, line) && line.find("END_OF_FILE")!=-1){
-		std::cout << line.size() <<std::endl;
-		Account account (line.substr(0,4),line.substr(6,25),line.substr(27,27),line.substr(29,36),line.substr(38,41));
-		accounts.push_back(account);
+	while (getline(infile, line)){
+		if (line.size() == 39){
+			Account account (line.substr(0,4),line.substr(6,25),line.substr(27,27),line.substr(29,36),line.substr(38,38));
+			accounts.push_back(account);
+		}
 	}
 	infile.close();
-
 	//return accounts;
 	return accounts;
 }
 
 Account *Utilities::GetAccountFromName(std::string name, std::vector<Account> accounts){
 	//Gets account associated with input name
-	bool found = false;
-	std::vector<Account>::iterator it = accounts.begin();
-	for(int i=0; i<accounts.size(); i++){
-		if (it->GetAccountName() == name){
-			return &*it;
+	
+	for(auto i = accounts.begin(); i!=accounts.end(); i++){
+		Account acc = *i;
+		if (acc.GetAccountName().find(name) != std::string::npos){
+			return &acc;
 		}
-		++it;
 	}
 	return nullptr;
 }
 
 Account *Utilities::GetAccountFromNumber(std::string number, std::vector<Account> accounts){
 	//Gets account associated with input account number
-	bool found = false;
-	std::vector<Account>::iterator it = accounts.begin();
-	for(int i=0; i<accounts.size(); i++){
-		if (it->GetAccountNumber() == number){
-			return &*it;
-		}
-		++it;
-	}
 
+	for(auto i = accounts.begin(); i!=accounts.end(); i++){
+		Account acc = *i;
+		if (std::stod(acc.GetAccountNumber()) == std::stod(number)){
+			return &acc;
+		}
+	}
 	return nullptr;
 }
