@@ -17,7 +17,7 @@ Account::Account(std::string number, std::string name, std::string status, std::
 	this->account_number = number;
 	this->account_type = type;
 	this->account_status = status;
-	this->account_balance= stod(balance);
+	this->account_balance= std::stod(balance);
 }
 
 //leave first letter lowercase for all methods, better naming conventions this way, AND it messes up account_manager

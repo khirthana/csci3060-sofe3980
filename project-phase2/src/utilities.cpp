@@ -22,25 +22,26 @@ std::string Utilities::Prompt(std::string output, std::string reg){
 	 */
 	 
 	bool valid_input=false;
-
 	if (reg != "") {
 		while(valid_input==false){//if input is invalid then prompts again
-			std::cout << output << std::endl;
+			std::cout << output;
 
 			std::string input;
 			std::cin >> input;
 			try {
-			  std::regex re(reg);
-			  std::smatch match;
-			  if (regex_search(input, match, re) && match.size() > 1) {
-				return match.str(1);
-			  }
+				std::regex re(reg);
+				std::smatch match;
+				
+				std::regex_search(input, match, re);
+				if (match.size() == 1) {
+					return match.str(0);
+				}
 			} catch (std::regex_error& e) {
 			}
 			std::cout << "Invalid input." << std::endl;
 		}
 	} else { //if all we want to do is output to console (ie info)
-		std::cout << output << std::endl;
+		std::cout << output;
 		return "";
 	}
 
@@ -52,11 +53,12 @@ std::vector<Account> Utilities::LoadAccountInformation(std::string accounts_file
 	//read through accounts file to Get information about account holder
 	std::string line;
 	std::vector<Account> accounts;
-	std::fstream infile;
-	infile.open(accounts_file);
-	while (getline(infile, line)){
-		//Account account (line.substr(0,4),line.substr(6,25),line.substr(27,27),line.substr(29,36),line.substr(38,41));
-		//accounts.push_front(account);
+	std::ifstream infile(accounts_file);
+
+	while (getline(infile, line) && line.find("END_OF_FILE")!=-1){
+		std::cout << line.size() <<std::endl;
+		Account account (line.substr(0,4),line.substr(6,25),line.substr(27,27),line.substr(29,36),line.substr(38,41));
+		accounts.push_back(account);
 	}
 	infile.close();
 
