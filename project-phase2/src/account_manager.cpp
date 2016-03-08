@@ -2,7 +2,7 @@
 *
 */
 #include "account.h"
-#include "utilities.cpp"
+#include "utilities.h"
 #include "account_manager.h"
 #include <stdio.h>
 #include <iostream>
@@ -10,16 +10,19 @@
 #include <fstream>
 #include <vector>
 
+AccountManager::AccountManager() : transactions_log(""), session_type(""), current_account(0) {
+}
+
 void AccountManager::Login(){
-	//an example usage of the this->utility_functions
+	//an example usage of the utility functions
 	this->session_type = Utilities::Prompt("Please Enter the Kind of Session: ","standard|admin");
-	
+
 	this->accounts_in_file = Utilities::LoadAccountInformation("Accountsfile.txt");
-	
+
 	if(this->session_type=="standard"){
 		std::string account_name = Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
 		this->current_account = Utilities::GetAccountFromName(account_name,accounts_in_file);
-		
+
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Name.");
 		}
@@ -34,13 +37,13 @@ void AccountManager::Withdrawal(){
 			Utilities::Prompt("Invalid Account Name.");
 		}
 	}
-	
-	
+
+
 	std::string account_number = Utilities::Prompt("Please Enter the Account Number: ","\\d{0,5}");
 	if (account_number != this->current_account->GetAccountNumber()){
 		return;
 	}
-		
+
 	double withdrawal_amount= std::stod(Utilities::Prompt("Please Enter the Withdrawl Ammount: ","\\d{0,5}")); //needs changing reg to upper amount limit
 	double current_balance = this->current_account->GetBalance();
 	if ( current_balance > withdrawal_amount){
@@ -125,8 +128,8 @@ void AccountManager::CreateAccount(){
 		//initial balance
 		double account_balance = 0;
 
-		//create account with unique Please Enter the Account Number: 
-		
+		//create account with unique Please Enter the Account Number:
+
 		//if account created; add account information in transactions_log list
 		this->transactions_log.append("05 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+std::to_string(this->current_account->GetBalance())+" "+this->current_account->GetAccountType()+"\n");
 	}
@@ -159,9 +162,9 @@ void AccountManager::EnableAccount(){ // theoretically complete
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Number.");
 		}
-		
+
 		this->current_account->SetAccountStatus("A"); // Set active
-		
+
 		//if account enabled; add enabed account information in transactions_log list
 		this->transactions_log.append("09 "+this->current_account->GetAccountName()+" "+this->current_account->GetAccountNumber()+" "+std::to_string(this->current_account->GetBalance())+" "+this->current_account->GetAccountStatus()+"\n");
 	}
@@ -180,7 +183,7 @@ void AccountManager::DisableAccount(){ // theoretically complete
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Number.");
 		}
-		
+
 		this->current_account->SetAccountStatus("D"); // Set active
 
 		//if account disabled; add disabled account information in transactions_log list
@@ -196,12 +199,12 @@ void AccountManager::ChangePlan(){ // theoretically complete
 		std::string account_name =  Utilities::Prompt("Please Enter the Name of the Account Holder: ","\\u\\l+ \\u\\l+");
 		std::string account_number = Utilities::Prompt("Please Enter the Account Number: ","\\d{0,5}");
 		//changeplan for account; account type should be change (S/NS)
-		
+
 		this->current_account = Utilities::GetAccountFromNumber(account_number,this->accounts_in_file);
 		if (this->current_account == nullptr){
 			Utilities::Prompt("Invalid Account Number.");
 		}
-		
+
 		if (this->current_account->GetAccountStatus() == "S"){
 			this->current_account->SetAccountType("NS");
 		}
@@ -229,12 +232,4 @@ void AccountManager::Logout(){
 	outfile.open("transaction_log.txt");
 	outfile << this->transactions_log << std::endl;
 	outfile.close();
-}
-
-
-int main(int argc, char **argv)
-{
-	AccountManager accounts = AccountManager();
-	accounts.Login();
-	return 0;
 }

@@ -4,23 +4,23 @@ authors: Khirthana Subramanian - 100453865
 				 James Morrison - 100524362
 */
 
+#include "account_manager.h"
 #include <string>
-#include <stdio.h>
 #include <iostream>
 
 using namespace std;
 
-int main(int argc, char **argv){
-	printf("Banking System\n");
+int main(int argc, char **argv) {
+	AccountManager account_manager;
 
-	printf("Enter the transaction you want to do this session:\n");
+	cout << "Banking System" << endl;
+	cout << "Enter the transaction you want to do this session:" << endl;
 
 	string input;
-
-	cin>>input;
+	cin >> input;
 
 	if (input == "login") {
-		AccountManager.login();
+		account_manager.Login();
 	} else {
 		printf("You have to login in order to process transactions\n");
 	}
