@@ -1,5 +1,0 @@
-login
-standard
-Jane Doe
-Delete account
-logout

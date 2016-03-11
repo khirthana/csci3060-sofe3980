@@ -1,2 +1,0 @@
-Login successful.
-Transaction not completed. Only allowed to withdraw in $5 increments.

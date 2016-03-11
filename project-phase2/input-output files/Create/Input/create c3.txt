@@ -1,5 +1,0 @@
-login
-admin
-create
-JonnyGthe Appleseedguy
-logout

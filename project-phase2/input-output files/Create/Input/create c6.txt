@@ -1,6 +1,0 @@
-login
-admin
-create
-John Doe
-5000.10
-logout

@@ -1,4 +1,0 @@
-Login
-admin
-changeplan
-Logout

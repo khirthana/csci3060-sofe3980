@@ -1,3 +1,0 @@
-Deposit 50.00
-login
-logout

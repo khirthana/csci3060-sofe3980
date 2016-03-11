@@ -1,4 +1,0 @@
-Login successful.
-You do not have access to deposit to this account.
-Transaction fee is not deducted.
-Logout successful.

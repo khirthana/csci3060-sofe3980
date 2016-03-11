@@ -1,3 +1,0 @@
-Login successful.
-Action unsuccessul. Enter account holder name and/or account number which exist in Bank System.
-Logout successful.

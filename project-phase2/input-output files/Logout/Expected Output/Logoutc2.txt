@@ -1,3 +1,0 @@
-Login successful.
-Logout successful.
-Action not completed. You need to be logged in.

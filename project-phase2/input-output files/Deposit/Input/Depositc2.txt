@@ -1,5 +1,0 @@
-Deposit
-John Doe
-00004
-25.00
-logout

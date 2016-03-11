@@ -1,6 +1,0 @@
-Paybill
-Jaina Patel
-00001
-CQ
-6000.00
-logout

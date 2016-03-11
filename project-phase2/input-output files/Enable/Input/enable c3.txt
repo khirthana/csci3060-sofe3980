@@ -1,6 +1,0 @@
-login
-admin
-enable
-John Smith
-00005
-logout

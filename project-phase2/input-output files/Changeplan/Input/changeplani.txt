@@ -1,5 +1,0 @@
-Login
-admin
-changeplan
-JP
-Logout

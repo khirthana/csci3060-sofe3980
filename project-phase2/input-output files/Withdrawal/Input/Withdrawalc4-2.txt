@@ -1,6 +1,0 @@
-login
-admin
-Withdrawal
-John Doe
-00008
-5000.00

@@ -1,6 +1,0 @@
-Login
-admin
-changeplan
-Jaina Patel
-00009
-Logout

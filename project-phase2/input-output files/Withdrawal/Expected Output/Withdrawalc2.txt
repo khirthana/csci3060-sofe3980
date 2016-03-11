@@ -1,3 +1,0 @@
-Login successful.
-Withdrawal unsuccessful. Exceeds the maximum limit.
-Transaction fee are not deducted.

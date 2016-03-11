@@ -1,3 +1,0 @@
-Login successful.
-Action denied. Amount exceeds the daily withdrawal amount of $500.00.
-Transaction fee is not deducted.

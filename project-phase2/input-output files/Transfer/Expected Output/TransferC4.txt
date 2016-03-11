@@ -1,3 +1,0 @@
-Login successful. 
-Action denied. Maximum amount of transfer is $1000.00 for standard session.
-Transaction fee is not deducted.

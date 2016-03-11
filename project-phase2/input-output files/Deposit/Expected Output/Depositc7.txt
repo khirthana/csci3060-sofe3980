@@ -1,4 +1,0 @@
-Login successful.
-Action denied. Account not active.
-Transaction fee not deducted.
-Logout successful.

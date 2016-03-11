@@ -1,5 +1,0 @@
-login successful.
-Please Enter the Name of the Account Holder: 
-Please Enter the Account Number:
-Please Enter the Name of the Account Holder:
-Error, An Account with Name of Account Holder does not exist.

@@ -1,3 +1,0 @@
-Login successful.
-Action denied. Not enough funds.
-Logout successful.

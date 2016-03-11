@@ -1,3 +1,0 @@
-Login successful.
-Action unsuccessul. Enter valid information.
-Logout successful.

@@ -1,7 +1,0 @@
-login
-admin
-delete
-John Doe
-1231345
-create
-logout

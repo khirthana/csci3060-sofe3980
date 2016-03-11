@@ -1,7 +1,0 @@
-login 
-admin
-Deposit
-James Morrison
-00003
-150.50
-logout

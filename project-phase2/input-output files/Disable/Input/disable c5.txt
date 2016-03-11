@@ -1,7 +1,0 @@
-login
-admin
-disable
-James Morrison
-disable
-James Morrison
-logout
