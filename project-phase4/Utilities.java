@@ -53,55 +53,71 @@ public class Utilities{
 		
 		 return transaction_file_name;
 	}
-		
 	
-//method to load account information from Master Bank Accounts File	
-	public static List<Account> LoadAccountInformation(String accounts_file) throws IOException{
-
-	//read through accounts file to get information about account holder
-	String line;
-	List<Account> accounts =new ArrayList<Account>();
-	BufferedReader br = new BufferedReader(new FileReader(accounts_file));
-
-	while ((line = br.readLine()) != null) {
-		if (line.length() == 39){
-		Account account=new Account(line.substring(0,5),line.substring(6,26),line.substring(27,28),line.substring(29,37),line.substring(38,39));
-		accounts.add(account);
+	
+	
+	/*
+	ERROR <msg = type & description of error>
+	-no bank account should ever have a negative balance
+	-a newly created bank account must have an account number different from all existing bank accounts
+	*/
+	//method used to report certain errors using standardised format
+	public static void CheckForError(Account account,ArrayList<Account> accounts){
+		
+		if (account.GetBalance() < 0){
+			System.out.println("ERROR <negative balance issue>");
+		}
+		
+		for (Account a : accounts){
+			if (account.GetAccountNumber() == a.GetAccountNumber()){
+				System.out.println("ERROR <accounts with same number issue>");
+			}
 		}
 	}
-	br.close();
-
-	return accounts;
+	
+	//method to load account information from Master Bank Accounts File	
+	public static ArrayList<Account> LoadAccountInformation(String accounts_file) throws IOException{
+	
+		//read through accounts file to get information about account holder
+		String line;
+		ArrayList<Account> accounts = new ArrayList<Account>();
+		BufferedReader br = new BufferedReader(new FileReader(accounts_file));
+	
+		while ((line = br.readLine()) != null) {
+			if (line.length() == 39){
+				String[] splits = line.split("\\s+");
+				String name = "";
+				for (int n = 1; n < splits.length-3;n++){
+					name += splits[n];
+				}
+				Account account = new Account(splits[0],name,splits[splits.length-2],splits[splits.length-1],splits[splits.length]);
+				accounts.add(account);
+			}
+		}
+		br.close();
+	
+		return accounts;
 	}
 
 	
 //method to gather account information associated with input account name
-	public static Account GetAccountFromName(String name, List<Account> accounts){
-		
-		Iterator<Account> it = accounts.iterator();
-		  while(it.hasNext())
-		  {
-			  Account account=(Account) it.next();
-			  if( (account.GetAccountName()).equals(name)){
-				  return account;
-			  }
-		  }
+	public static Account GetAccountFromName(String name, ArrayList<Account> accounts){
+		for (int n = 0; n < accounts.size();n++){
+			if (accounts.get(n).GetAccountName().equals(name)){
+				return accounts.get(n);
+			}
+		}
 		return null;
 	}
 
 
 //method to gather account information associated with input account number
-	public static Account GetAccountFromNumber(String number,List<Account> accounts){
-
-		Iterator<Account> it = accounts.iterator();
-		  while(it.hasNext())
-		  {
-			 Account account=(Account) it.next();
-			
-			  if((account.GetAccountNumber()).equals(number)){
-				  return account;
-			  }
-		  }
+	public static Account GetAccountFromNumber(String number,ArrayList<Account> accounts){
+		for (int n = 0; n < accounts.size();n++){
+			if (accounts.get(n).GetAccountNumber().equals(number)){
+				return accounts.get(n);
+			}
+		}
 		return null;
 	}
 }

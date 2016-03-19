@@ -20,21 +20,41 @@ public class BackEndSystem{
 	Output: new Master Bank Accounts File, new Current Bank Accounts File
 	*/
 	
-	
-	
-	/*
-	ERROR <msg = type & description of error>
-	-no bank account should ever have a negative balance
-	-a newly created bank account must have an account number different from all existing bank accounts
-	*/
-	
-	
+
 	
 	/*
 	ERROR <msg = type & description of error & file caused error>
 	-if bad input file format, it should immediately stop and log a fatal error on the terminal
 	*/
-
-
-
+	
+	/*
+	 * Method designed to be used within a loop (if transaction is valid, fee(account))
+	 */
+	public static void Fee(Account account){
+		account.SetBalance(account.GetBalance()-0.05); //charge 5 cents no matter what
+		if (account.GetAccountType()== "N"){ //charge an extra 5 if not a student
+			account.SetBalance(account.GetBalance()-0.05);
+		}
+	}
+	
+	@SuppressWarnings("null")
+	public static void main(String [] args) throws IOException
+	{
+		String master_account_file=""; 
+		String transaction_files_folder="";
+			
+		if (args.length > 0) {
+			try {
+					master_account_file=args[0]; 
+					transaction_files_folder=args[1];
+					  
+			} catch (NumberFormatException e) {
+					System.err.println("Inputs should be Master Bank Accounts Filename and Transactions Files Foldername");
+					System.exit(1);
+			}
+		}
+		
+		//calls method to merge transaction files into MergedTransactionFile
+		String Merged_transaction_filename=Utilities.MergeTransactionFiles(transaction_files_folder);
+	}
 }
