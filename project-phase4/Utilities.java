@@ -62,17 +62,22 @@ public class Utilities{
 	-a newly created bank account must have an account number different from all existing bank accounts
 	*/
 	//method used to report certain errors using standardised format
-	public static void CheckForError(Account account,ArrayList<Account> accounts){
+	public static boolean CheckForError(Account placeholder_account,ArrayList<Account> accounts, boolean old){
 		
-		if (account.GetBalance() < 0){
+		if (placeholder_account.GetBalance() < 0){
 			System.out.println("ERROR <negative balance issue>");
+			return false;
 		}
 		
-		for (Account a : accounts){
-			if (account.GetAccountNumber() == a.GetAccountNumber()){
-				System.out.println("ERROR <accounts with same number issue>");
+		if (!old){
+			for (Account a : accounts){
+				if (placeholder_account.GetAccountNumber() == a.GetAccountNumber()){
+					System.out.println("ERROR <accounts with same number issue>");
+					return false;
+				}
 			}
 		}
+		return true;
 	}
 	
 	//method to load account information from Master Bank Accounts File	
