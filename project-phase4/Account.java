@@ -13,13 +13,15 @@ public class Account{
 	String account_name;
 	String account_number;
 	String account_type;
+	String account_transactions;
 	String account_status;
 	double account_balance;
 
-	Account(String number, String name, String status, String  balance , String type){
+	Account(String number, String name, String status, String  balance , String transactions, String type){
 		this.account_name = name;
 		this.account_number = number;
 		this.account_type = type;
+		this.account_transactions = transactions;
 		this.account_status = status;
 		this.account_balance= Double.parseDouble(balance);
 	}
@@ -48,7 +50,12 @@ public class Account{
 		//returns account number
 		return account_number;
 	}
-
+	
+	public String GetAccountTransactions(){
+		//returns account transactions
+		return account_transactions;
+	}
+	
 	public void SetBalance(double balance){
 		//stores the current balance of account holder
 		this.account_balance = balance;
@@ -62,6 +69,10 @@ public class Account{
 	public void SetAccountStatus(String status){
 		//stores the status of account holder (A/D)
 		this.account_status = status;
+	}
+	
+	public void IncrementAccountTransactions(){
+		this.account_transactions++;
 	}
 }
 

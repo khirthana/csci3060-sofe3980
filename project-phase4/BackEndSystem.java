@@ -28,9 +28,59 @@ public class BackEndSystem{
 		String[] transactions = transaction_list;
 		for (String transaction : transactions){
 			Account current_account = Utilities.GetAccountFromNumber(transaction, current_accounts);
-			Account test = new Account(current_account.GetAccountNumber(),current_account.GetAccountName(),current_account.GetAccountStatus(),Double.toString(current_account.GetBalance()),current_account.GetAccountType());
+			Account test = new Account(current_account.GetAccountNumber(),current_account.GetAccountName(),current_account.GetAccountStatus(),Double.toString(current_account.GetBalance()),current_account.getAccountTransactions(),current_account.GetAccountType());
 			
 			//apply transaction to test account
+			String[] splits = transaction.split("\\s+");
+			
+			if (splits[0].equals("00")){ //end
+				
+			}
+	
+			else if (splits[0].equals("01")){ //withdrawal
+							
+			}
+			
+			else if (splits[0].equals("02")){ //transfer
+				
+			}
+			
+			else if (splits[0].equals("03")){ //paybill
+				
+			}
+			
+			else if (splits[0].equals("04")){ //deposit
+				
+			}
+			
+			else if (splits[0].equals("05")){ //create
+				
+			}
+			
+			else if (splits[0].equals("06")){ //delete
+				
+			}
+			
+			else if (splits[0].equals("07")){ //disable
+				
+			}
+			
+			else if (splits[0].equals("08")){ //changeplan
+				
+			}
+			
+			else if (splits[0].equals("09")){ //enable
+				
+			}
+			
+			else if (splits[0].equals("10")){ //login
+				
+			}
+			
+			else{
+				System.out.println("Transaction code invalid");
+			}
+			
 			if (!Utilities.CheckForError(test, current_accounts,true)){
 				//if valid, then replace current account with test (with transactions applied) 
 				current_account = test;
