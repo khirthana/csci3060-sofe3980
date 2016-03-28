@@ -24,7 +24,7 @@ public class BackEndSystem{
 	/*
 	 * General function to read the new transactions, apply to a simulated set of the real set and only make final change if valid
 	 */
-	public static void ValidateTransactions(ArrayList<Account> current_accounts,ArrayList<Account> new_accounts,String[] transaction_list){
+	public static void ValidateTransactions(List<Account> current_accounts,ArrayList<Account> new_accounts,String[] transaction_list){
 		String[] transactions = transaction_list;
 		for (String transaction : transactions){
 			String[] details = transaction.split("\\s+");
@@ -120,12 +120,12 @@ public class BackEndSystem{
 		}
 		
 		//testing in eclipse
-		master_account_file = "MasterAccountsFile.txt";
-		transaction_files_folder = "E:\\Users\\James\\Documents\\GitHub\\csci3060-sofe3980\\project-phase4";
+		master_account_file = "E:\\Users\\James\\workspace\\Part 5\\src\\phase4\\MasterAccountsFile.txt";
+		transaction_files_folder = "E:\\Users\\James\\workspace\\Part 5\\src\\phase4\\transaction folder";
 		
 		//calls method to merge transaction files into MergedTransactionFile
 		String merged_transaction_filename=Utilities.MergeTransactionFiles(transaction_files_folder);
-		ArrayList<Account> accounts = Utilities.LoadAccountInformation(master_account_file);
+		List<Account> accounts = Utilities.LoadAccountInformation(master_account_file);
 		String[] transactions = Utilities.LoadTransactions(merged_transaction_filename);
 		ValidateTransactions(accounts,new ArrayList<Account>(),transactions);
 	}
