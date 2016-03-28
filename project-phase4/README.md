@@ -1,3 +1,3 @@
-# Example to run code:
-java main "MasterAccountsFile.txt" "\\C:\\transactionsFolder"
+Example to run code:
 
+java BackEndSystem "MasterAccountsFile.txt" "\C:\transactionsFolder"
