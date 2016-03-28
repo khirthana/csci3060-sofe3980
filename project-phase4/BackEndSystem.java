@@ -27,53 +27,54 @@ public class BackEndSystem{
 	public static void ValidateTransactions(ArrayList<Account> current_accounts,ArrayList<Account> new_accounts,String[] transaction_list){
 		String[] transactions = transaction_list;
 		for (String transaction : transactions){
-			Account current_account = Utilities.GetAccountFromNumber(transaction, current_accounts);
-			Account test = new Account(current_account.GetAccountNumber(),current_account.GetAccountName(),current_account.GetAccountStatus(),Double.toString(current_account.GetBalance()),current_account.getAccountTransactions(),current_account.GetAccountType());
+			String[] details = transaction.split("\\s+");
+			
+			Account current_account = Utilities.GetAccountFromNumber(details[2], current_accounts);
+			Account test = new Account(current_account.GetAccountNumber(),current_account.GetAccountName(),current_account.GetAccountStatus(),Double.toString(current_account.GetBalance()),current_account.GetAccountTransactions(),current_account.GetAccountType());
 			
 			//apply transaction to test account
-			String[] splits = transaction.split("\\s+");
 			
-			if (splits[0].equals("00")){ //end
+			if (details[0].equals("00")){ //end
 				
 			}
 	
-			else if (splits[0].equals("01")){ //withdrawal
+			else if (details[0].equals("01")){ //withdrawal
 							
 			}
 			
-			else if (splits[0].equals("02")){ //transfer
+			else if (details[0].equals("02")){ //transfer
 				
 			}
 			
-			else if (splits[0].equals("03")){ //paybill
+			else if (details[0].equals("03")){ //paybill
 				
 			}
 			
-			else if (splits[0].equals("04")){ //deposit
+			else if (details[0].equals("04")){ //deposit
 				
 			}
 			
-			else if (splits[0].equals("05")){ //create
+			else if (details[0].equals("05")){ //create
 				
 			}
 			
-			else if (splits[0].equals("06")){ //delete
+			else if (details[0].equals("06")){ //delete
 				
 			}
 			
-			else if (splits[0].equals("07")){ //disable
+			else if (details[0].equals("07")){ //disable
 				
 			}
 			
-			else if (splits[0].equals("08")){ //changeplan
+			else if (details[0].equals("08")){ //changeplan
 				
 			}
 			
-			else if (splits[0].equals("09")){ //enable
+			else if (details[0].equals("09")){ //enable
 				
 			}
 			
-			else if (splits[0].equals("10")){ //login
+			else if (details[0].equals("10")){ //login
 				
 			}
 			
@@ -102,6 +103,8 @@ public class BackEndSystem{
 	@SuppressWarnings("null")
 	public static void main(String [] args) throws IOException
 	{
+		
+		
 		String master_account_file=""; 
 		String transaction_files_folder="";
 			
@@ -116,7 +119,14 @@ public class BackEndSystem{
 			}
 		}
 		
+		//testing in eclipse
+		master_account_file = "MasterAccountsFile.txt";
+		transaction_files_folder = "E:\\Users\\James\\Documents\\GitHub\\csci3060-sofe3980\\project-phase4";
+		
 		//calls method to merge transaction files into MergedTransactionFile
-		String Merged_transaction_filename=Utilities.MergeTransactionFiles(transaction_files_folder);
+		String merged_transaction_filename=Utilities.MergeTransactionFiles(transaction_files_folder);
+		ArrayList<Account> accounts = Utilities.LoadAccountInformation(master_account_file);
+		String[] transactions = Utilities.LoadTransactions(merged_transaction_filename);
+		ValidateTransactions(accounts,new ArrayList<Account>(),transactions);
 	}
 }

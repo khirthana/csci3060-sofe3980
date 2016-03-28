@@ -95,7 +95,7 @@ public class Utilities{
 				for (int n = 1; n < splits.length-3;n++){
 					name += splits[n];
 				}
-				Account account = new Account(splits[0],name,splits,[split.length-3],splits[splits.length-2],splits[splits.length-1],splits[splits.length]);
+				Account account = new Account(splits[0],name,splits[splits.length-3],splits[splits.length-2],splits[splits.length-1],splits[splits.length]);
 				accounts.add(account);
 			}
 		}
@@ -123,6 +123,13 @@ public class Utilities{
 				return accounts.get(n);
 			}
 		}
+		return null;
+	}
+
+
+
+	public static String[] LoadTransactions(String merged_transaction_filename) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

@@ -13,7 +13,7 @@ public class Account{
 	String account_name;
 	String account_number;
 	String account_type;
-	String account_transactions;
+	int account_transactions;
 	String account_status;
 	double account_balance;
 
@@ -21,7 +21,7 @@ public class Account{
 		this.account_name = name;
 		this.account_number = number;
 		this.account_type = type;
-		this.account_transactions = transactions;
+		this.account_transactions = Integer.parseInt(transactions);
 		this.account_status = status;
 		this.account_balance= Double.parseDouble(balance);
 	}
@@ -53,7 +53,7 @@ public class Account{
 	
 	public String GetAccountTransactions(){
 		//returns account transactions
-		return account_transactions;
+		return Integer.toString(account_transactions);
 	}
 	
 	public void SetBalance(double balance){
