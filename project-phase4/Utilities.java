@@ -89,13 +89,13 @@ public class Utilities{
 		BufferedReader br = new BufferedReader(new FileReader(accounts_file));
 	
 		while ((line = br.readLine()) != null) {
-			if (line.length() == 39){
+			if (!line.contains("END_OF_FILE")){
 				String[] splits = line.split("\\s+");
 				String name = "";
-				for (int n = 1; n < splits.length-3;n++){
+				for (int n = 1; n < splits.length-4;n++){
 					name += splits[n];
 				}
-				Account account = new Account(splits[0],name,splits[splits.length-3],splits[splits.length-2],splits[splits.length-1],splits[splits.length]);
+				Account account = new Account(splits[0],name,splits[splits.length-4],splits[splits.length-3],splits[splits.length-2],splits[splits.length-1]);
 				accounts.add(account);
 			}
 		}
