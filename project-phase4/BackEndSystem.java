@@ -24,8 +24,9 @@ public class BackEndSystem{
 	/*
 	 * General function to read the new transactions, apply to a simulated set of the real set and only make final change if valid
 	 */
-	public static void ValidateTransactions(List<Account> current_accounts,List<Account> new_accounts,List<String> transaction_list){
+	public static List<Account> ValidateTransactions(List<Account> current_accounts,List<Account> n_accounts,List<String> transaction_list){
 		List<String> transactions = transaction_list;
+		List<Account> new_accounts = n_accounts;
 		for (String transaction : transactions){
 
 			String[] details_raw = transaction.split("\\s+");
@@ -49,7 +50,7 @@ public class BackEndSystem{
 				current_account = Utilities.GetAccountFromNumber(details[2], new_accounts);
 				if (current_account == null){
 					System.out.println("ERROR: <Account in transaction does not exist>");
-					return;
+					return null;
 				}
 			}
 			
@@ -57,47 +58,47 @@ public class BackEndSystem{
 			
 			//apply transaction to test account
 			
-			if (details[0].equals("00")){ //end
+			if (details[0].equals("00")){ // end
 				
 			}
 	
-			else if (details[0].equals("01")){ //withdrawal
+			else if (details[0].equals("01")){ // withdrawal
 				test.SetBalance(test.GetBalance() - Double.valueOf(details[3]));
 			}
 			
-			else if (details[0].equals("02")){ //transfer
+			else if (details[0].equals("02")){ // transfer
 				
 			}
 			
-			else if (details[0].equals("03")){ //paybill
+			else if (details[0].equals("03")){ // paybill
 				
 			}
 			
-			else if (details[0].equals("04")){ //deposit
+			else if (details[0].equals("04")){ // deposit
 				test.SetBalance(test.GetBalance() + Double.valueOf(details[3]));
 			}
 			
-			else if (details[0].equals("05")){ //create
+			else if (details[0].equals("05")){ // create
 				
 			}
 			
-			else if (details[0].equals("06")){ //delete
+			else if (details[0].equals("06")){ // delete
 				
 			}
 			
-			else if (details[0].equals("07")){ //disable
+			else if (details[0].equals("07")){ // disable
 				
 			}
 			
-			else if (details[0].equals("08")){ //changeplan
+			else if (details[0].equals("08")){ // changeplan
 				
 			}
 			
-			else if (details[0].equals("09")){ //enable
+			else if (details[0].equals("09")){ // enable
 				
 			}
 			
-			else if (details[0].equals("10")){ //login
+			else if (details[0].equals("10")){ // login
 				
 			}
 			
@@ -106,13 +107,15 @@ public class BackEndSystem{
 			}
 			
 			if (!Utilities.CheckForError(test, current_accounts,account_old)){
-				//if valid, then replace current account with test (with transactions applied) 
+				// if valid, then replace current account with test (with transactions applied) 
 				current_account = test;
 				if ("01020304".contains(details[0]))
 					Fee(current_account);
 			}
 		}
+		return new_accounts;
 	}
+	
 	
 	/*
 	 * Method designed to be used within a loop (if transaction is valid, fee(account))
@@ -151,7 +154,10 @@ public class BackEndSystem{
 		String merged_transaction_filename = Utilities.MergeTransactionFiles(transaction_files_folder);
 		List<Account> accounts = Utilities.LoadAccountInformation(master_account_file);
 		List<String> transactions = Utilities.LoadTransactions(merged_transaction_filename);
-		ValidateTransactions(accounts,new ArrayList<Account>(),transactions);
+		List<Account> new_accounts = ValidateTransactions(accounts,new ArrayList<Account>(),transactions);
+		
+		Utilities.WriteAccounts(accounts,"MasterAccountsFile.txt");
+		Utilities.WriteAccounts(new_accounts,"NewAccountsFile.txt");
 		
 	}
 }

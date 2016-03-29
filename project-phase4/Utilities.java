@@ -1,7 +1,7 @@
 /*
 authors: Khirthana Subramanian - 100453865
          Jaina Patel - 100523188
-				 James Morrison - 100524362
+		 James Morrison - 100524362
 This class is meant to contain simplified and modular usages of common functions
  */
 
@@ -11,10 +11,10 @@ import java.util.*;
 
 public class Utilities{
 
-//method to merge transaction files into MergedTransactionFile
+	//method to merge transaction files into MergedTransactionFile
 	public static String MergeTransactionFiles(String transaction_files_folder){
 		
-		String transaction_file_name="MergedTransactionFile.txt";
+		String transaction_file_name = "MergedTransactionFile.txt";
 		
 		FileWriter fstream = null;
 		BufferedWriter out = null;
@@ -105,7 +105,7 @@ public class Utilities{
 	}
 
 	
-//method to gather account information associated with input account name
+	//method to gather account information associated with input account name
 	public static Account GetAccountFromName(String name, List<Account> accounts){
 		for (int n = 0; n < accounts.size();n++){
 			if (accounts.get(n).GetAccountName().equals(name)){
@@ -127,7 +127,7 @@ public class Utilities{
 	}
 
 
-
+	
 	public static List<String> LoadTransactions(String merged_transaction_filename) throws IOException{
 		String line;
 		
@@ -141,4 +141,34 @@ public class Utilities{
 	
 		return transactions;
 	}
+	
+	public static void WriteAccounts(List<Account> accounts,String filename){
+		FileWriter fstream = null;
+		BufferedWriter out = null;
+		try {
+			fstream = new FileWriter(filename, false);
+			 out = new BufferedWriter(fstream);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		String line;
+		for (Account a : accounts){
+			line = a.GetAccountNumber()+" "+a.GetAccountName()+" "+a.GetAccountStatus()+" "+Double.toString(a.GetBalance())+" "+a.GetAccountTransactions()+" "+a.GetAccountType();
+			try {
+				out.write(line);
+				out.newLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 }
