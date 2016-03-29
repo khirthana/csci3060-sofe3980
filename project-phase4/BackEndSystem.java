@@ -24,10 +24,22 @@ public class BackEndSystem{
 	/*
 	 * General function to read the new transactions, apply to a simulated set of the real set and only make final change if valid
 	 */
-	public static void ValidateTransactions(List<Account> current_accounts,ArrayList<Account> new_accounts,String[] transaction_list){
-		String[] transactions = transaction_list;
+	public static void ValidateTransactions(List<Account> current_accounts,List<Account> new_accounts,List<String> transaction_list){
+		List<String> transactions = transaction_list;
 		for (String transaction : transactions){
-			String[] details = transaction.split("\\s+");
+
+			String[] details_raw = transaction.split("\\s+");
+			String[] details = {details_raw[0],details_raw[1],"","",""};
+			
+			int n = 2;
+			for (; !Character.isDigit(details_raw[n].charAt(0));n++){
+				details[1] += " " + details_raw[n];
+			}
+			
+			while (n < details_raw.length){
+				details[n-1] = details_raw[n];
+				n++;
+			}
 			
 			boolean account_old = true;
 			Account current_account = Utilities.GetAccountFromNumber(details[2], current_accounts);
@@ -136,9 +148,10 @@ public class BackEndSystem{
 		transaction_files_folder = "E:\\Users\\James\\workspace\\Part 5\\src\\phase4\\transaction folder";
 		
 		//calls method to merge transaction files into MergedTransactionFile
-		String merged_transaction_filename=Utilities.MergeTransactionFiles(transaction_files_folder);
+		String merged_transaction_filename = Utilities.MergeTransactionFiles(transaction_files_folder);
 		List<Account> accounts = Utilities.LoadAccountInformation(master_account_file);
-		String[] transactions = Utilities.LoadTransactions(merged_transaction_filename);
+		List<String> transactions = Utilities.LoadTransactions(merged_transaction_filename);
 		ValidateTransactions(accounts,new ArrayList<Account>(),transactions);
+		
 	}
 }

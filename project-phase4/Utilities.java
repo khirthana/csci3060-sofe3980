@@ -19,7 +19,7 @@ public class Utilities{
 		FileWriter fstream = null;
 		BufferedWriter out = null;
 		try {
-			fstream = new FileWriter(transaction_file_name, true);
+			fstream = new FileWriter(transaction_file_name, false);
 			 out = new BufferedWriter(fstream);
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -116,7 +116,7 @@ public class Utilities{
 	}
 
 
-//method to gather account information associated with input account number
+	//method to gather account information associated with input account number
 	public static Account GetAccountFromNumber(String number,List<Account> accounts){
 		for (int n = 0; n < accounts.size();n++){
 			if (accounts.get(n).GetAccountNumber().equals(number)){
@@ -128,8 +128,17 @@ public class Utilities{
 
 
 
-	public static String[] LoadTransactions(String merged_transaction_filename) {
-		// TODO Auto-generated method stub
-		return null;
+	public static List<String> LoadTransactions(String merged_transaction_filename) throws IOException{
+		String line;
+		
+		List<String> transactions = new ArrayList<String>();
+		BufferedReader br = new BufferedReader(new FileReader(merged_transaction_filename));
+		
+		while ((line = br.readLine()) != null) {
+			transactions.add(line);
+		}
+		br.close();
+	
+		return transactions;
 	}
 }
