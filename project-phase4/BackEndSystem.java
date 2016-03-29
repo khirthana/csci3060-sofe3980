@@ -29,7 +29,18 @@ public class BackEndSystem{
 		for (String transaction : transactions){
 			String[] details = transaction.split("\\s+");
 			
+			boolean account_old = true;
 			Account current_account = Utilities.GetAccountFromNumber(details[2], current_accounts);
+			if (current_account == null){
+				account_old = false;
+				
+				current_account = Utilities.GetAccountFromNumber(details[2], new_accounts);
+				if (current_account == null){
+					System.out.println("ERROR: <Account in transaction does not exist>");
+					return;
+				}
+			}
+			
 			Account test = new Account(current_account.GetAccountNumber(),current_account.GetAccountName(),current_account.GetAccountStatus(),Double.toString(current_account.GetBalance()),current_account.GetAccountTransactions(),current_account.GetAccountType());
 			
 			//apply transaction to test account
@@ -39,7 +50,7 @@ public class BackEndSystem{
 			}
 	
 			else if (details[0].equals("01")){ //withdrawal
-							
+				test.SetBalance(test.GetBalance() - Double.valueOf(details[3]));
 			}
 			
 			else if (details[0].equals("02")){ //transfer
@@ -51,7 +62,7 @@ public class BackEndSystem{
 			}
 			
 			else if (details[0].equals("04")){ //deposit
-				
+				test.SetBalance(test.GetBalance() + Double.valueOf(details[3]));
 			}
 			
 			else if (details[0].equals("05")){ //create
@@ -82,10 +93,11 @@ public class BackEndSystem{
 				System.out.println("Transaction code invalid");
 			}
 			
-			if (!Utilities.CheckForError(test, current_accounts,true)){
+			if (!Utilities.CheckForError(test, current_accounts,account_old)){
 				//if valid, then replace current account with test (with transactions applied) 
 				current_account = test;
-				Fee(current_account);
+				if ("01020304".contains(details[0]))
+					Fee(current_account);
 			}
 		}
 	}

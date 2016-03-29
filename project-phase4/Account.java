@@ -10,12 +10,12 @@ import java.io.*;
 import java.util.*;
 
 public class Account{
-	String account_name;
-	String account_number;
-	String account_type;
-	int account_transactions;
-	String account_status;
-	double account_balance;
+	private String account_name;
+	private String account_number;
+	private String account_type;
+	private int account_transactions;
+	private String account_status;
+	private double account_balance;
 
 	Account(String number, String name, String status, String  balance , String transactions, String type){
 		this.account_name = name;
