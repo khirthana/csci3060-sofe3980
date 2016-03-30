@@ -154,7 +154,13 @@ public class Utilities{
 		
 		String line;
 		for (Account a : accounts){
-			line = a.GetAccountNumber()+" "+a.GetAccountName()+" "+a.GetAccountStatus()+" "+Double.toString(a.GetBalance())+" "+a.GetAccountTransactions()+" "+a.GetAccountType();
+			String accountName=a.GetAccountName();
+			while(accountName.length()<20)
+			{
+				accountName=accountName+" ";
+			}
+			
+			line = a.GetAccountNumber()+" "+accountName+" "+a.GetAccountStatus()+" "+Double.toString(a.GetBalance())+" "+a.GetAccountTransactions()+" "+a.GetAccountType();
 			try {
 				out.write(line);
 				out.newLine();
