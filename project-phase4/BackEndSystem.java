@@ -58,20 +58,17 @@ public class BackEndSystem{
 			
 			//apply transaction to test account
 			
-			if (details[0].equals("00")){ // end
-				
-			}
-	
-			else if (details[0].equals("01")){ // withdrawal
+			if (details[0].equals("01")){ // withdrawal
 				test.SetBalance(test.GetBalance() - Double.valueOf(details[3]));
 			}
 			
 			else if (details[0].equals("02")){ // transfer
+				test.SetBalance(test.GetBalance() - Double.valueOf(details[3]));
 				
 			}
 			
 			else if (details[0].equals("03")){ // paybill
-				
+				test.SetBalance(test.GetBalance() - Double.valueOf(details[3]));
 			}
 			
 			else if (details[0].equals("04")){ // deposit
@@ -79,27 +76,27 @@ public class BackEndSystem{
 			}
 			
 			else if (details[0].equals("05")){ // create
-				
+				Account new_account = new Account(details[2],details[1],"A",details[3],"0",details[4]);
+				new_accounts.add(new_account);
 			}
 			
 			else if (details[0].equals("06")){ // delete
-				
+				if (account_old == true)
+					current_accounts.remove(current_account);
+				else
+					new_accounts.remove(current_account);
 			}
 			
 			else if (details[0].equals("07")){ // disable
-				
+				test.SetAccountStatus(details[4]);
 			}
 			
 			else if (details[0].equals("08")){ // changeplan
-				
+				test.SetAccountType(details[4]);
 			}
 			
 			else if (details[0].equals("09")){ // enable
-				
-			}
-			
-			else if (details[0].equals("10")){ // login
-				
+				test.SetAccountStatus(details[4]);
 			}
 			
 			else{
@@ -110,6 +107,7 @@ public class BackEndSystem{
 				// if valid, then replace current account with test (with transactions applied) 
 				current_account = test;
 				if ("01020304".contains(details[0]))
+					current_account.IncrementAccountTransactions();
 					Fee(current_account);
 			}
 		}
@@ -145,10 +143,6 @@ public class BackEndSystem{
 					System.exit(1);
 			}
 		}
-		
-		//testing in eclipse
-		master_account_file = "E:\\Users\\James\\workspace\\Part 5\\src\\phase4\\MasterAccountsFile.txt";
-		transaction_files_folder = "E:\\Users\\James\\workspace\\Part 5\\src\\phase4\\transaction folder";
 		
 		//calls method to merge transaction files into MergedTransactionFile
 		String merged_transaction_filename = Utilities.MergeTransactionFiles(transaction_files_folder);
